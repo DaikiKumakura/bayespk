@@ -8,6 +8,10 @@ authors:
     orcid: "https://orcid.org/0000-0001-9859-0720"
 version: "0.1.0"
 date-released: "2026-11-18"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.24325846"
+    description: "Archived release (Zenodo)"
 repository-code: "https://github.com/DaikiKumakura/bayespk"
 url: "https://daikikumakura.github.io/bayespk/"
 license: GPL-3.0-or-later
