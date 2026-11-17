@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "bayespk: Bayesian Population Pharmacokinetics Without Writing Stan"
+authors:
+  - family-names: Kumakura
+    given-names: Daiki
+    orcid: "https://orcid.org/0000-0001-9859-0720"
+version: "0.1.0"
+date-released: "2026-11-18"
+repository-code: "https://github.com/DaikiKumakura/bayespk"
+url: "https://daikikumakura.github.io/bayespk/"
+license: GPL-3.0-or-later
+abstract: >-
+  An R package for Bayesian population pharmacokinetic estimation. The model is described in one line with pk_model() (1- or 2-compartment, IV bolus, infusion or first-order oral absorption, log-normal between-subject variability, covariate formulas, four residual error models), a NONMEM-style data set is passed as it is, and bpk_fit() samples the posterior with precompiled Stan programs that use closed-form solutions. Results include posterior summaries, convergence diagnostics with warnings, prior sensitivity and predictions for new regimens.
+keywords:
+  - "pharmacometrics"
+  - "population pharmacokinetics"
+  - "Bayesian"
+  - "Stan"
+  - "R package"

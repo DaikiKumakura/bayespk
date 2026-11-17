@@ -37,12 +37,20 @@ Columns `ID`, `TIME`, `DV`, `AMT` and optionally `EVID`, `MDV`, `RATE`, `ADDL`, 
 
 ## Installation
 
+From R-universe (binaries for Windows and macOS):
+
+```r
+install.packages("bayespk", repos = c("https://daikikumakura.r-universe.dev", "https://cloud.r-project.org"))
+```
+
+From GitHub (compiles the Stan program once; a C++ toolchain is needed, about 1.5 minutes on Windows):
+
 ```r
 # install.packages("remotes")
 remotes::install_github("DaikiKumakura/bayespk")
 ```
 
-Installing from source compiles the Stan program once (a C++ toolchain is needed; about 1.5 minutes on Windows).
+Not on CRAN.
 
 ## Validation
 
