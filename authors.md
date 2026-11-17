@@ -7,7 +7,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/DaikiKumakura/bayespk/blob/v0.1.0/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/DaikiKumakura/bayespk/blob/main/DESCRIPTION)
 
 Kumakura D (2026). *bayespk: Bayesian Population Pharmacokinetics
 Without Writing 'Stan'*. R package version 0.1.0,

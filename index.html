@@ -49,6 +49,7 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="bayespk">bayespk<a class="anchor" aria-label="anchor" href="#bayespk"></a>
 </h1></div>
+<p><a href="https://doi.org/10.5281/zenodo.24325846" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.24325846.svg" alt="DOI"></a></p>
 <p>Bayesian population pharmacokinetics in R <strong>without writing Stan</strong>.</p>
 <p>Describe the model in one line, pass a NONMEM-style data set as it is, and get posterior summaries, convergence diagnostics and predictions for new regimens. The Stan programs are precompiled and use closed-form solutions, so there is nothing to compile when you fit a model.</p>
 <blockquote>
@@ -115,6 +116,11 @@
 </ul>
 <p>See <code><a href="articles/bayespk.html">vignette("bayespk")</a></code> for a walk-through.</p>
 <p>The package check passed on Windows with R 4.5.3. In the 2-compartment oral simulation, only 4 of 40 fits had both zero divergences and maximum population R-hat at most 1.01. Inspect <code>summary(fit)</code> for the parameters with poor mixing, and use <code>bpk_diagnostics(fit)</code> to check divergences before interpreting predictions.</p>
+</div>
+<div class="section level2">
+<h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
+</h2>
+<p>Kumakura D. bayespk: Bayesian Population Pharmacokinetics Without Writing Stan (version 0.1.0). Zenodo; 2026. <a href="https://doi.org/10.5281/zenodo.24325846" class="external-link uri">https://doi.org/10.5281/zenodo.24325846</a></p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">

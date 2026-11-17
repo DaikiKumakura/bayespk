@@ -108,15 +108,15 @@ predict(fit, regimen = dose_regimen(320, ii = 12, n = 3), ndraws = 200)
 #> Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)
 #> Chain 1: 
-#> Chain 1:  Elapsed Time: 3.548 seconds (Warm-up)
-#> Chain 1:                1.705 seconds (Sampling)
-#> Chain 1:                5.253 seconds (Total)
+#> Chain 1:  Elapsed Time: 3.529 seconds (Warm-up)
+#> Chain 1:                1.709 seconds (Sampling)
+#> Chain 1:                5.238 seconds (Total)
 #> Chain 1: 
 #> 
 #> SAMPLING FOR MODEL 'popk' NOW (CHAIN 2).
 #> Chain 2: 
-#> Chain 2: Gradient evaluation took 0.000117 seconds
-#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 1.17 seconds.
+#> Chain 2: Gradient evaluation took 0.000115 seconds
+#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 1.15 seconds.
 #> Chain 2: Adjust your expectations accordingly!
 #> Chain 2: 
 #> Chain 2: 
@@ -133,9 +133,9 @@ predict(fit, regimen = dose_regimen(320, ii = 12, n = 3), ndraws = 200)
 #> Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)
 #> Chain 2: 
-#> Chain 2:  Elapsed Time: 3.329 seconds (Warm-up)
-#> Chain 2:                1.733 seconds (Sampling)
-#> Chain 2:                5.062 seconds (Total)
+#> Chain 2:  Elapsed Time: 3.326 seconds (Warm-up)
+#> Chain 2:                1.727 seconds (Sampling)
+#> Chain 2:                5.053 seconds (Total)
 #> Chain 2: 
 #> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
 #> Running the chains for more iterations may help. See

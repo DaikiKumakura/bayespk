@@ -34,8 +34,8 @@ bpk_diagnostics(fit)
 #> 
 #> SAMPLING FOR MODEL 'popk' NOW (CHAIN 1).
 #> Chain 1: 
-#> Chain 1: Gradient evaluation took 0.000192 seconds
-#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.92 seconds.
+#> Chain 1: Gradient evaluation took 0.000199 seconds
+#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.99 seconds.
 #> Chain 1: Adjust your expectations accordingly!
 #> Chain 1: 
 #> Chain 1: 
@@ -52,15 +52,15 @@ bpk_diagnostics(fit)
 #> Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)
 #> Chain 1: 
-#> Chain 1:  Elapsed Time: 3.54 seconds (Warm-up)
-#> Chain 1:                1.713 seconds (Sampling)
-#> Chain 1:                5.253 seconds (Total)
+#> Chain 1:  Elapsed Time: 3.528 seconds (Warm-up)
+#> Chain 1:                1.719 seconds (Sampling)
+#> Chain 1:                5.247 seconds (Total)
 #> Chain 1: 
 #> 
 #> SAMPLING FOR MODEL 'popk' NOW (CHAIN 2).
 #> Chain 2: 
-#> Chain 2: Gradient evaluation took 0.000116 seconds
-#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 1.16 seconds.
+#> Chain 2: Gradient evaluation took 0.000135 seconds
+#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 1.35 seconds.
 #> Chain 2: Adjust your expectations accordingly!
 #> Chain 2: 
 #> Chain 2: 
@@ -77,9 +77,9 @@ bpk_diagnostics(fit)
 #> Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)
 #> Chain 2: 
-#> Chain 2:  Elapsed Time: 3.323 seconds (Warm-up)
-#> Chain 2:                1.708 seconds (Sampling)
-#> Chain 2:                5.031 seconds (Total)
+#> Chain 2:  Elapsed Time: 3.35 seconds (Warm-up)
+#> Chain 2:                1.717 seconds (Sampling)
+#> Chain 2:                5.067 seconds (Total)
 #> Chain 2: 
 #> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
 #> Running the chains for more iterations may help. See

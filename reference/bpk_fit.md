@@ -86,8 +86,8 @@ summary(fit)
 #> 
 #> SAMPLING FOR MODEL 'popk' NOW (CHAIN 1).
 #> Chain 1: 
-#> Chain 1: Gradient evaluation took 0.000126 seconds
-#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.26 seconds.
+#> Chain 1: Gradient evaluation took 0.000129 seconds
+#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.29 seconds.
 #> Chain 1: Adjust your expectations accordingly!
 #> Chain 1: 
 #> Chain 1: 
@@ -104,15 +104,15 @@ summary(fit)
 #> Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)
 #> Chain 1: 
-#> Chain 1:  Elapsed Time: 3.54 seconds (Warm-up)
-#> Chain 1:                1.704 seconds (Sampling)
-#> Chain 1:                5.244 seconds (Total)
+#> Chain 1:  Elapsed Time: 3.568 seconds (Warm-up)
+#> Chain 1:                1.712 seconds (Sampling)
+#> Chain 1:                5.28 seconds (Total)
 #> Chain 1: 
 #> 
 #> SAMPLING FOR MODEL 'popk' NOW (CHAIN 2).
 #> Chain 2: 
-#> Chain 2: Gradient evaluation took 0.000134 seconds
-#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 1.34 seconds.
+#> Chain 2: Gradient evaluation took 0.000133 seconds
+#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 1.33 seconds.
 #> Chain 2: Adjust your expectations accordingly!
 #> Chain 2: 
 #> Chain 2: 
@@ -129,9 +129,9 @@ summary(fit)
 #> Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)
 #> Chain 2: 
-#> Chain 2:  Elapsed Time: 3.33 seconds (Warm-up)
-#> Chain 2:                1.714 seconds (Sampling)
-#> Chain 2:                5.044 seconds (Total)
+#> Chain 2:  Elapsed Time: 3.326 seconds (Warm-up)
+#> Chain 2:                1.717 seconds (Sampling)
+#> Chain 2:                5.043 seconds (Total)
 #> Chain 2: 
 #> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
 #> Running the chains for more iterations may help. See
