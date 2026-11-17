@@ -40,8 +40,8 @@ if (requireNamespace("priorsense", quietly = TRUE)) prior_sensitivity(fit)
 #> 
 #> SAMPLING FOR MODEL 'popk' NOW (CHAIN 1).
 #> Chain 1: 
-#> Chain 1: Gradient evaluation took 0.000125 seconds
-#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.25 seconds.
+#> Chain 1: Gradient evaluation took 0.000126 seconds
+#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.26 seconds.
 #> Chain 1: Adjust your expectations accordingly!
 #> Chain 1: 
 #> Chain 1: 
@@ -58,15 +58,15 @@ if (requireNamespace("priorsense", quietly = TRUE)) prior_sensitivity(fit)
 #> Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)
 #> Chain 1: 
-#> Chain 1:  Elapsed Time: 3.551 seconds (Warm-up)
-#> Chain 1:                1.711 seconds (Sampling)
-#> Chain 1:                5.262 seconds (Total)
+#> Chain 1:  Elapsed Time: 3.538 seconds (Warm-up)
+#> Chain 1:                1.707 seconds (Sampling)
+#> Chain 1:                5.245 seconds (Total)
 #> Chain 1: 
 #> 
 #> SAMPLING FOR MODEL 'popk' NOW (CHAIN 2).
 #> Chain 2: 
-#> Chain 2: Gradient evaluation took 0.000119 seconds
-#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 1.19 seconds.
+#> Chain 2: Gradient evaluation took 0.000116 seconds
+#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 1.16 seconds.
 #> Chain 2: Adjust your expectations accordingly!
 #> Chain 2: 
 #> Chain 2: 
@@ -83,9 +83,9 @@ if (requireNamespace("priorsense", quietly = TRUE)) prior_sensitivity(fit)
 #> Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)
 #> Chain 2: 
-#> Chain 2:  Elapsed Time: 3.322 seconds (Warm-up)
-#> Chain 2:                1.712 seconds (Sampling)
-#> Chain 2:                5.034 seconds (Total)
+#> Chain 2:  Elapsed Time: 3.324 seconds (Warm-up)
+#> Chain 2:                1.706 seconds (Sampling)
+#> Chain 2:                5.03 seconds (Total)
 #> Chain 2: 
 #> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
 #> Running the chains for more iterations may help. See
