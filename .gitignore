@@ -1,0 +1,21 @@
+src/*.o
+src/*.so
+src/*.dll
+src/*.cc
+src/*.h
+src/Makevars*
+R/stanmodels.R
+.Rhistory
+docs/
+SPEC.md
+inst/validation/results/**/*.rds
+inst/validation/results/*.log
+inst/validation/results/**/*.log
+inst/doc
+doc/
+Meta/
+# results from builds before 0.1.0 (kept locally)
+inst/validation/results/coverage-2cmt-oral.csv
+inst/validation/results/coverage-2cmt-oral-summary.csv
+inst/validation/results/recovery-2cmt.csv
+inst/validation/results/warfarin-comparison.csv

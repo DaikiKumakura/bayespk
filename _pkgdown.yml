@@ -1,0 +1,12 @@
+url: https://daikikumakura.github.io/bayespk/
+template:
+  bootstrap: 5
+reference:
+  - title: Model
+    contents: [pk_model, pk_priors, priors]
+  - title: Fit and results
+    contents: [bpk_fit, summary.bpk_fit, predict.bpk_fit, bpk_draws, bpk_diagnostics, prior_sensitivity]
+  - title: Concentrations and regimens
+    contents: [pk_conc, dose_regimen]
+  - title: Package
+    contents: [bayespk-package]

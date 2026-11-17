@@ -1,0 +1,11 @@
+"design","variable","n","coverage_90","median_rel_error","reps_with_divergences","reps_rhat_over_1.01","parameter_rhat_over_1.01","parameter_rhat_missing"
+"original","b_wt",20,0.85,-0.239626111907543,0,12,0,0
+"original","CL",20,0.85,0.00269531082644192,0,12,0,0
+"original","KA",20,0.95,0.0121052661577962,0,12,0,0
+"original","omega_CL",20,0.85,-0.00401472025231137,0,12,5,0
+"original","omega_KA",20,0.95,0.0308189658921686,0,12,3,0
+"original","omega_V1",20,0.95,-0.0119299236131559,0,12,9,0
+"original","Q",20,0.95,-0.0026237246464399,0,12,0,0
+"original","sigma_prop",20,0.95,-0.0118637419063509,0,12,0,0
+"original","V1",20,0.95,-0.018941800376031,0,12,0,0
+"original","V2",20,0.85,0.00472060851574729,0,12,0,0

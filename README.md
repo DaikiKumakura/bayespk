@@ -1,0 +1,58 @@
+# bayespk
+
+Bayesian population pharmacokinetics in R **without writing Stan**.
+
+Describe the model in one line, pass a NONMEM-style data set as it is, and get posterior summaries, convergence diagnostics and predictions for new regimens. The Stan programs are precompiled and use closed-form solutions, so there is nothing to compile when you fit a model.
+
+> Status: 0.1.0, first release. Not on CRAN. Validated as summarised below; known limitations are listed in [`inst/validation/README.md`](inst/validation/README.md).
+
+```r
+library(bayespk)
+
+d <- nlmixr2data::theo_sd   # 12 subjects, oral theophylline
+
+mod <- pk_model("1cmt", route = "oral", iiv = c("CL", "V", "KA"), error = "proportional")
+fit <- bpk_fit(mod, d, chains = 4, cores = 4)
+
+summary(fit)                                        # posterior summaries and diagnostics
+predict(fit)                                        # individual predictions at observed times
+predict(fit, regimen = dose_regimen(320, ii = 12, n = 3))   # a new regimen
+```
+
+## What it does
+
+- **Models:** linear 1- and 2-compartment; IV bolus, zero-order infusion (`RATE`) and first-order oral absorption. Parameters `CL`, `V` (or `CL`, `V1`, `Q`, `V2`) and `KA`. For oral dosing the parameters are apparent values (divided by bioavailability).
+- **Variability:** log-normal between-subject variability on any parameter, optionally correlated.
+- **Covariates:** written as formulas, for example `CL ~ (WT / 70)^0.75` (fixed exponent), `CL ~ (WT / 70)^b_wt` (estimated), `CL ~ exp(b_age * (AGE - 40))`, `CL ~ (SEX == 1)^b_sex`.
+- **Residual error:** additive, proportional, combined, or additive on the log scale.
+- **Priors:** `pk_priors(CL = lognormal(log(5), 0.5), b_wt = normal(0.75, 0.2), omega = half_normal(0.5))`. Anything not given gets a weakly informative default, which is printed and stored with the fit.
+- **Flip-flop:** in oral models, `ka_faster = TRUE` constrains the typical KA above the disposition rate when absorption is known to be faster than distribution (off by default).
+- **Diagnostics by default:** divergent transitions, tree depth, E-BFMI, R-hat and effective sample sizes, and a check that chains did not settle in different modes, with warnings. `prior_sensitivity()` runs power-scaling sensitivity (priorsense).
+
+Not in this version: user-written ODE models, Michaelis–Menten or target-mediated elimination, steady-state records, below-quantification data, inter-occasion variability, time-varying covariates and pharmacodynamics.
+
+## Data
+
+Columns `ID`, `TIME`, `DV`, `AMT` and optionally `EVID`, `MDV`, `RATE`, `ADDL`, `II`, as in NONMEM. `"."` is read as missing. Observations at or before the first dose are dropped with a message.
+
+## Installation
+
+```r
+# install.packages("remotes")
+remotes::install_github("DaikiKumakura/bayespk")
+```
+
+Installing from source compiles the Stan program once (a C++ toolchain is needed; about 1.5 minutes on Windows).
+
+## Validation
+
+Scripts are in `inst/validation`; results and known limitations are in [`inst/validation/README.md`](inst/validation/README.md). Summary as of 2026-11-17:
+
+- Closed-form concentrations agree with rxode2 ODE solutions (relative error < 1e-8, including KA equal to a disposition rate).
+- Simulation-based calibration: 1-cmt oral (200 replicates), 1-cmt oral with an estimated weight exponent (200) and 2-cmt infusion (100). No rank-uniformity test is significant after correction for the number of parameters.
+- Public data: theophylline and warfarin (nlmixr2data). Posterior medians of typical values are within 1–10% of nlmixr2 FOCEI estimates.
+- 2-cmt oral simulations (40 subjects, 20 replicates): 90% interval coverage 0.85–0.95. Fits take about 15 minutes on one core.
+
+See `vignette("bayespk")` for a walk-through.
+
+The package check passed on Windows with R 4.5.3. In the 2-compartment oral simulation, only 4 of 40 fits had both zero divergences and maximum population R-hat at most 1.01. Inspect `summary(fit)` for the parameters with poor mixing, and use `bpk_diagnostics(fit)` to check divergences before interpreting predictions.

@@ -1,0 +1,46 @@
+Package: bayespk
+Title: Bayesian Population Pharmacokinetics Without Writing 'Stan'
+Version: 0.1.0
+Authors@R: person("Daiki", "Kumakura", role = c("aut", "cre"), email = "55353329+DaikiKumakura@users.noreply.github.com")
+Description: Fits 1- and 2-compartment linear population pharmacokinetic
+    models by Bayesian inference. Models are described in a few lines of R and
+    the data are a 'NONMEM'-style data set used as is. Precompiled 'Stan'
+    programs use closed-form solutions superposed over doses, so no
+    'CmdStan', no model code and no compilation are needed at run time.
+    Reports convergence diagnostics by default and predicts new regimens from
+    the posterior without refitting.
+URL: https://github.com/DaikiKumakura/bayespk, https://daikikumakura.github.io/bayespk/
+BugReports: https://github.com/DaikiKumakura/bayespk/issues
+License: GPL (>= 3)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Biarch: true
+Depends:
+    R (>= 4.1.0)
+Imports:
+    methods,
+    posterior,
+    Rcpp (>= 0.12.0),
+    RcppParallel (>= 5.0.1),
+    rstan (>= 2.26.0),
+    rstantools (>= 2.7.1),
+    stats,
+    utils
+LinkingTo:
+    BH (>= 1.66.0),
+    Rcpp (>= 0.12.0),
+    RcppEigen (>= 0.3.3.3.0),
+    RcppParallel (>= 5.0.1),
+    rstan (>= 2.26.0),
+    StanHeaders (>= 2.26.0)
+Suggests:
+    knitr,
+    nlmixr2data,
+    priorsense,
+    rmarkdown,
+    rxode2,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+SystemRequirements: GNU make
+VignetteBuilder: knitr

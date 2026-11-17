@@ -1,0 +1,12 @@
+^SPEC\.md$
+^inst/validation$
+^\.git$
+^.*\.Rproj$
+^\.github$
+^LICENSE\.md$
+^docs$
+^_pkgdown\.yml$
+^pkgdown$
+^cran-comments\.md$
+^doc$
+^Meta$
