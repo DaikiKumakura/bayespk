@@ -35,8 +35,8 @@ fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 #> 
 #> SAMPLING FOR MODEL 'popk' NOW (CHAIN 1).
 #> Chain 1: 
-#> Chain 1: Gradient evaluation took 0.000202 seconds
-#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 2.02 seconds.
+#> Chain 1: Gradient evaluation took 0.000182 seconds
+#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.82 seconds.
 #> Chain 1: Adjust your expectations accordingly!
 #> Chain 1: 
 #> Chain 1: 
@@ -53,15 +53,15 @@ fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 #> Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)
 #> Chain 1: 
-#> Chain 1:  Elapsed Time: 9.485 seconds (Warm-up)
-#> Chain 1:                3.087 seconds (Sampling)
-#> Chain 1:                12.572 seconds (Total)
+#> Chain 1:  Elapsed Time: 8.603 seconds (Warm-up)
+#> Chain 1:                2.82 seconds (Sampling)
+#> Chain 1:                11.423 seconds (Total)
 #> Chain 1: 
 #> 
 #> SAMPLING FOR MODEL 'popk' NOW (CHAIN 2).
 #> Chain 2: 
-#> Chain 2: Gradient evaluation took 0.000175 seconds
-#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 1.75 seconds.
+#> Chain 2: Gradient evaluation took 0.000172 seconds
+#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 1.72 seconds.
 #> Chain 2: Adjust your expectations accordingly!
 #> Chain 2: 
 #> Chain 2: 
@@ -78,9 +78,9 @@ fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 #> Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)
 #> Chain 2: 
-#> Chain 2:  Elapsed Time: 10.566 seconds (Warm-up)
-#> Chain 2:                3.377 seconds (Sampling)
-#> Chain 2:                13.943 seconds (Total)
+#> Chain 2:  Elapsed Time: 9.561 seconds (Warm-up)
+#> Chain 2:                3.066 seconds (Sampling)
+#> Chain 2:                12.627 seconds (Total)
 #> Chain 2: 
 #> Warning: Smallest effective sample size 271 (bulk) / 333 (tail) < 400.
 if (requireNamespace("priorsense", quietly = TRUE)) prior_sensitivity(fit)

@@ -87,8 +87,8 @@ fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 #> 
 #> SAMPLING FOR MODEL 'popk' NOW (CHAIN 1).
 #> Chain 1: 
-#> Chain 1: Gradient evaluation took 0.00019 seconds
-#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.9 seconds.
+#> Chain 1: Gradient evaluation took 0.000181 seconds
+#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.81 seconds.
 #> Chain 1: Adjust your expectations accordingly!
 #> Chain 1: 
 #> Chain 1: 
@@ -105,15 +105,15 @@ fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 #> Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)
 #> Chain 1: 
-#> Chain 1:  Elapsed Time: 9.469 seconds (Warm-up)
-#> Chain 1:                3.063 seconds (Sampling)
-#> Chain 1:                12.532 seconds (Total)
+#> Chain 1:  Elapsed Time: 8.638 seconds (Warm-up)
+#> Chain 1:                2.819 seconds (Sampling)
+#> Chain 1:                11.457 seconds (Total)
 #> Chain 1: 
 #> 
 #> SAMPLING FOR MODEL 'popk' NOW (CHAIN 2).
 #> Chain 2: 
-#> Chain 2: Gradient evaluation took 0.000193 seconds
-#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 1.93 seconds.
+#> Chain 2: Gradient evaluation took 0.000177 seconds
+#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 1.77 seconds.
 #> Chain 2: Adjust your expectations accordingly!
 #> Chain 2: 
 #> Chain 2: 
@@ -130,9 +130,9 @@ fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 #> Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)
 #> Chain 2: 
-#> Chain 2:  Elapsed Time: 10.544 seconds (Warm-up)
-#> Chain 2:                3.378 seconds (Sampling)
-#> Chain 2:                13.922 seconds (Total)
+#> Chain 2:  Elapsed Time: 9.575 seconds (Warm-up)
+#> Chain 2:                3.066 seconds (Sampling)
+#> Chain 2:                12.641 seconds (Total)
 #> Chain 2: 
 #> Warning: Smallest effective sample size 271 (bulk) / 333 (tail) < 400.
 predict(fit, regimen = dose_regimen(100, ii = 12, n = 3), ndraws = 200)

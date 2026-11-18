@@ -81,8 +81,8 @@ fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 #> 
 #> SAMPLING FOR MODEL 'popk' NOW (CHAIN 1).
 #> Chain 1: 
-#> Chain 1: Gradient evaluation took 0.000189 seconds
-#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.89 seconds.
+#> Chain 1: Gradient evaluation took 0.000198 seconds
+#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.98 seconds.
 #> Chain 1: Adjust your expectations accordingly!
 #> Chain 1: 
 #> Chain 1: 
@@ -99,15 +99,15 @@ fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 #> Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)
 #> Chain 1: 
-#> Chain 1:  Elapsed Time: 9.455 seconds (Warm-up)
-#> Chain 1:                3.08 seconds (Sampling)
-#> Chain 1:                12.535 seconds (Total)
+#> Chain 1:  Elapsed Time: 8.613 seconds (Warm-up)
+#> Chain 1:                2.805 seconds (Sampling)
+#> Chain 1:                11.418 seconds (Total)
 #> Chain 1: 
 #> 
 #> SAMPLING FOR MODEL 'popk' NOW (CHAIN 2).
 #> Chain 2: 
-#> Chain 2: Gradient evaluation took 0.000176 seconds
-#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 1.76 seconds.
+#> Chain 2: Gradient evaluation took 0.000173 seconds
+#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 1.73 seconds.
 #> Chain 2: Adjust your expectations accordingly!
 #> Chain 2: 
 #> Chain 2: 
@@ -124,9 +124,9 @@ fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 #> Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)
 #> Chain 2: 
-#> Chain 2:  Elapsed Time: 10.528 seconds (Warm-up)
-#> Chain 2:                3.367 seconds (Sampling)
-#> Chain 2:                13.895 seconds (Total)
+#> Chain 2:  Elapsed Time: 9.6 seconds (Warm-up)
+#> Chain 2:                3.068 seconds (Sampling)
+#> Chain 2:                12.668 seconds (Total)
 #> Chain 2: 
 #> Warning: Smallest effective sample size 271 (bulk) / 333 (tail) < 400.
 summary(fit)

@@ -5,7 +5,7 @@ articles:
   bayespk: bayespk.html
   covariates-priors: covariates-priors.html
   two-compartment: two-compartment.html
-last_built: 2026-11-18T13:08Z
+last_built: 2026-11-18T13:20Z
 urls:
   reference: https://daikikumakura.github.io/bayespk/reference
   article: https://daikikumakura.github.io/bayespk/articles
