@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">bayespk</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -17,6 +17,11 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/bayespk.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/covariates-priors.html">Covariates and informative priors</a></li>
+    <li><a class="dropdown-item" href="../articles/two-compartment.html">Two-compartment models and regimen comparison</a></li>
+  </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -34,13 +39,27 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.1" id="bayespk-011">bayespk 0.1.1<a class="anchor" aria-label="anchor" href="#bayespk-011"></a></h2>
+<ul><li>
+<code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> methods: individual fits on a fine time grid, observed vs predicted, trace plots, and predicted concentrations for new regimens with <code>compare =</code> for two regimens. All use Okabe-Ito colours.</li>
+<li>
+<code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> without <code>regimen</code> accepts <code>times</code> to return each subject’s prediction on a time grid. Predictions are returned as class <code>bpk_prediction</code> (a data frame).</li>
+<li>
+<code><a href="../reference/prior_sensitivity.html">prior_sensitivity()</a></code> reports parameters by their names (<code>CL</code>, <code>b_wt</code>, <code>omega_V</code>, …).</li>
+<li>New simulated data set <code>bpk_example</code>, used by every example.</li>
+<li>Three vignettes with precomputed results and figures: getting started, covariates and informative priors, two-compartment models and regimen comparison.</li>
+<li>
+<code>citation("bayespk")</code>, issue templates, and a README with figures and results.</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="bayespk-010">bayespk 0.1.0<a class="anchor" aria-label="anchor" href="#bayespk-010"></a></h2>
 <ul><li>First release: 1- and 2-compartment linear models (IV bolus, infusion, first-order oral), closed-form solutions, log-normal between-subject variability (optionally correlated), covariate formulas, four residual error models, weakly informative default priors, diagnostics with warnings, predictions for new regimens, prior sensitivity.</li>
 <li>
 <code>pk_model(ka_faster = TRUE)</code> constrains the typical KA above the disposition rate to remove flip-flop modes (off by default).</li>
 <li>Random effects are sampled as a sample mean plus Helmert deviations, which removes the correlation between typical values and the mean random effect.</li>
 </ul></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

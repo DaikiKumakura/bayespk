@@ -19,6 +19,10 @@
   : Summarise a fit
 - [`predict(`*`<bpk_fit>`*`)`](https://daikikumakura.github.io/bayespk/reference/predict.bpk_fit.md)
   : Posterior predictions
+- [`plot(`*`<bpk_fit>`*`)`](https://daikikumakura.github.io/bayespk/reference/plot.bpk_fit.md)
+  : Plot a fit
+- [`plot(`*`<bpk_prediction>`*`)`](https://daikikumakura.github.io/bayespk/reference/plot.bpk_prediction.md)
+  : Plot predictions
 - [`bpk_draws()`](https://daikikumakura.github.io/bayespk/reference/bpk_draws.md)
   : Posterior draws of population parameters
 - [`bpk_diagnostics()`](https://daikikumakura.github.io/bayespk/reference/bpk_diagnostics.md)
@@ -32,6 +36,11 @@
   : Concentrations from closed-form solutions
 - [`dose_regimen()`](https://daikikumakura.github.io/bayespk/reference/dose_regimen.md)
   : Dosing regimen
+
+## Data
+
+- [`bpk_example`](https://daikikumakura.github.io/bayespk/reference/bpk_example.md)
+  : Simulated oral pharmacokinetic data
 
 ## Package
 

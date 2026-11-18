@@ -24,18 +24,13 @@ tail effective sample sizes of the population parameters.
 
 ``` r
 # \donttest{
-if (requireNamespace("nlmixr2data", quietly = TRUE)) {
-d <- nlmixr2data::theo_sd
 mod <- pk_model("1cmt", route = "oral", iiv = c("CL", "V", "KA"))
-fit <- bpk_fit(mod, d, chains = 2, iter = 1000, seed = 1)
-bpk_diagnostics(fit)
-}
-#> 12 observation(s) at or before the first dose were dropped.
+fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 #> 
 #> SAMPLING FOR MODEL 'popk' NOW (CHAIN 1).
 #> Chain 1: 
-#> Chain 1: Gradient evaluation took 0.000199 seconds
-#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.99 seconds.
+#> Chain 1: Gradient evaluation took 0.000303 seconds
+#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 3.03 seconds.
 #> Chain 1: Adjust your expectations accordingly!
 #> Chain 1: 
 #> Chain 1: 
@@ -52,15 +47,15 @@ bpk_diagnostics(fit)
 #> Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)
 #> Chain 1: 
-#> Chain 1:  Elapsed Time: 3.528 seconds (Warm-up)
-#> Chain 1:                1.719 seconds (Sampling)
-#> Chain 1:                5.247 seconds (Total)
+#> Chain 1:  Elapsed Time: 9.443 seconds (Warm-up)
+#> Chain 1:                3.093 seconds (Sampling)
+#> Chain 1:                12.536 seconds (Total)
 #> Chain 1: 
 #> 
 #> SAMPLING FOR MODEL 'popk' NOW (CHAIN 2).
 #> Chain 2: 
-#> Chain 2: Gradient evaluation took 0.000135 seconds
-#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 1.35 seconds.
+#> Chain 2: Gradient evaluation took 0.000173 seconds
+#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 1.73 seconds.
 #> Chain 2: Adjust your expectations accordingly!
 #> Chain 2: 
 #> Chain 2: 
@@ -77,15 +72,12 @@ bpk_diagnostics(fit)
 #> Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)
 #> Chain 2: 
-#> Chain 2:  Elapsed Time: 3.35 seconds (Warm-up)
-#> Chain 2:                1.717 seconds (Sampling)
-#> Chain 2:                5.067 seconds (Total)
+#> Chain 2:  Elapsed Time: 10.469 seconds (Warm-up)
+#> Chain 2:                3.374 seconds (Sampling)
+#> Chain 2:                13.843 seconds (Total)
 #> Chain 2: 
-#> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
-#> Running the chains for more iterations may help. See
-#> https://mc-stan.org/misc/warnings.html#bulk-ess
-#> Warning: R-hat > 1.01 (maximum 1.014) for omega_CL; chains have not mixed. Run longer (iter) before using the results.
-#> Warning: Smallest effective sample size 200 (bulk) / 318 (tail) < 400.
+#> Warning: Smallest effective sample size 271 (bulk) / 333 (tail) < 400.
+bpk_diagnostics(fit)
 #> $divergent
 #> [1] 0
 #> 
@@ -93,22 +85,22 @@ bpk_diagnostics(fit)
 #> [1] 0
 #> 
 #> $ebfmi
-#> [1] 0.5443271 0.5387187
+#> [1] 0.5274514 0.7076860
 #> 
 #> $rhat_max
-#> [1] 1.01408
+#> [1] 1.006853
 #> 
 #> $rhat_high
-#> [1] "omega_CL"
+#> character(0)
 #> 
 #> $chains_apart
 #> character(0)
 #> 
 #> $ess_bulk_min
-#> [1] 200.4894
+#> [1] 271.4988
 #> 
 #> $ess_tail_min
-#> [1] 318.2081
+#> [1] 332.6188
 #> 
 # }
 ```

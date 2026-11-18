@@ -3,7 +3,9 @@ pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   bayespk: bayespk.html
-last_built: 2026-11-17T22:20Z
+  covariates-priors: covariates-priors.html
+  two-compartment: two-compartment.html
+last_built: 2026-11-18T13:08Z
 urls:
   reference: https://daikikumakura.github.io/bayespk/reference
   article: https://daikikumakura.github.io/bayespk/articles

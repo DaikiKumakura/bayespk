@@ -1,79 +1,81 @@
 # bayespk
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24325846.svg)](https://doi.org/10.5281/zenodo.24325846)
+[![R-CMD-check](https://github.com/DaikiKumakura/bayespk/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/DaikiKumakura/bayespk/actions/workflows/R-CMD-check.yaml)
+[![R-universe](https://daikikumakura.r-universe.dev/badges/bayespk)](https://daikikumakura.r-universe.dev/bayespk)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24325845.svg)](https://doi.org/10.5281/zenodo.24325845)
 
 Bayesian population pharmacokinetics in R **without writing Stan**.
 
-Describe the model in one line, pass a NONMEM-style data set as it is,
-and get posterior summaries, convergence diagnostics and predictions for
-new regimens. The Stan programs are precompiled and use closed-form
-solutions, so there is nothing to compile when you fit a model.
+- **One line per model.**
+  `pk_model("2cmt", route = "oral", iiv = c("CL", "V1", "KA"), covariates = list(CL ~ (WT / 70)^0.75))`.
+- **Your NONMEM data set as it is.** `ID`, `TIME`, `DV`, `AMT`, `EVID`,
+  `RATE`, `ADDL`/`II`, and `"."` for missing values.
+- **Nothing to compile.** The Stan programs are precompiled and use
+  closed-form solutions, so a fit starts at once. Binaries are on
+  R-universe.
+- **Priors you can state and check.** Use earlier studies with
+  [`pk_priors()`](https://daikikumakura.github.io/bayespk/reference/pk_priors.md).
+  Defaults are printed, and
+  [`prior_sensitivity()`](https://daikikumakura.github.io/bayespk/reference/prior_sensitivity.md)
+  shows whether conclusions depend on the prior.
+- **Diagnostics by default.** Warnings for divergences, R-hat, effective
+  sample size and chains stuck in different modes.
+- **Predictions for new regimens.** Simulate new subjects from the
+  posterior, with uncertainty and between-subject variability.
 
-> Status: 0.1.0, first release. Not on CRAN. Validated as summarised
-> below; known limitations are listed in
-> [`inst/validation/README.md`](https://daikikumakura.github.io/bayespk/inst/validation/README.md).
+## Example
 
 ``` r
 
 library(bayespk)
 
-d <- nlmixr2data::theo_sd   # 12 subjects, oral theophylline
-
 mod <- pk_model("1cmt", route = "oral", iiv = c("CL", "V", "KA"), error = "proportional")
-fit <- bpk_fit(mod, d, chains = 4, cores = 4)
+fit <- bpk_fit(mod, bpk_example, chains = 4, cores = 4, seed = 1)   # 30 simulated subjects
+summary(fit)
+#>    variable   mean     sd     q5    q50    q95 rhat ess_bulk ess_tail
+#>          CL  2.860 0.1420  2.630  2.860  3.100 1.00     6530     2740
+#>           V 27.700 1.6400 25.100 27.700 30.600 1.00     4760     3040
+#>          KA  0.976 0.0905  0.840  0.971  1.130 1.00     4750     2980
+#>    omega_CL  0.257 0.0405  0.199  0.252  0.330 1.01      910     1500
+#>     omega_V  0.298 0.0486  0.226  0.295  0.384 1.00     1050     2090
+#>    omega_KA  0.365 0.0849  0.238  0.358  0.515 1.00     1490     2030
+#>  sigma_prop  0.157 0.0117  0.139  0.156  0.176 1.00     2030     2860
 
-summary(fit)                                        # posterior summaries and diagnostics
-predict(fit)                                        # individual predictions at observed times
-predict(fit, regimen = dose_regimen(320, ii = 12, n = 3))   # a new regimen
+plot(fit)   # individual fits
 ```
 
-## What it does
+![Individual fits: observed concentrations (red) with posterior median
+and 90% interval per subject](reference/figures/README-individual.png)
 
-- **Models:** linear 1- and 2-compartment; IV bolus, zero-order infusion
-  (`RATE`) and first-order oral absorption. Parameters `CL`, `V` (or
-  `CL`, `V1`, `Q`, `V2`) and `KA`. For oral dosing the parameters are
-  apparent values (divided by bioavailability).
-- **Variability:** log-normal between-subject variability on any
-  parameter, optionally correlated.
-- **Covariates:** written as formulas, for example `CL ~ (WT / 70)^0.75`
-  (fixed exponent), `CL ~ (WT / 70)^b_wt` (estimated),
-  `CL ~ exp(b_age * (AGE - 40))`, `CL ~ (SEX == 1)^b_sex`.
-- **Residual error:** additive, proportional, combined, or additive on
-  the log scale.
-- **Priors:**
-  `pk_priors(CL = lognormal(log(5), 0.5), b_wt = normal(0.75, 0.2), omega = half_normal(0.5))`.
-  Anything not given gets a weakly informative default, which is printed
-  and stored with the fit.
-- **Flip-flop:** in oral models, `ka_faster = TRUE` constrains the
-  typical KA above the disposition rate when absorption is known to be
-  faster than distribution (off by default).
-- **Diagnostics by default:** divergent transitions, tree depth, E-BFMI,
-  R-hat and effective sample sizes, and a check that chains did not
-  settle in different modes, with warnings.
-  [`prior_sensitivity()`](https://daikikumakura.github.io/bayespk/reference/prior_sensitivity.md)
-  runs power-scaling sensitivity (priorsense).
+Individual fits: observed concentrations (red) with posterior median and
+90% interval per subject
 
-Not in this version: user-written ODE models, Michaelis–Menten or
-target-mediated elimination, steady-state records, below-quantification
-data, inter-occasion variability, time-varying covariates and
-pharmacodynamics.
+Compare dosing regimens for new patients (from the [two-compartment
+vignette](https://daikikumakura.github.io/bayespk/articles/two-compartment.html)):
 
-## Data
+``` r
 
-Columns `ID`, `TIME`, `DV`, `AMT` and optionally `EVID`, `MDV`, `RATE`,
-`ADDL`, `II`, as in NONMEM. `"."` is read as missing. Observations at or
-before the first dose are dropped with a message.
+a <- predict(fit2, regimen = dose_regimen(500, ii = 12, n = 8, rate = 500), times = t)
+b <- predict(fit2, regimen = dose_regimen(1000, ii = 24, n = 4, rate = 1000), times = t)
+plot(a, compare = b, log = TRUE, labels = c("500 mg every 12 h", "1000 mg every 24 h"))
+```
+
+![Predicted concentrations for two regimens, median and 90% interval of
+new subjects](reference/figures/README-regimens.png)
+
+Predicted concentrations for two regimens, median and 90% interval of
+new subjects
 
 ## Installation
 
-From R-universe (binaries for Windows and macOS):
+From R-universe (binaries for Windows, macOS and Linux):
 
 ``` r
 
 install.packages("bayespk", repos = c("https://daikikumakura.r-universe.dev", "https://cloud.r-project.org"))
 ```
 
-From GitHub (compiles the Stan program once; a C++ toolchain is needed,
+From GitHub (compiles the Stan program once; needs a C++ toolchain,
 about 1.5 minutes on Windows):
 
 ``` r
@@ -84,35 +86,73 @@ remotes::install_github("DaikiKumakura/bayespk")
 
 Not on CRAN.
 
-## Validation
+## Documentation
 
-Scripts are in `inst/validation`; results and known limitations are in
+- [Getting
+  started](https://daikikumakura.github.io/bayespk/articles/bayespk.html):
+  model, fit, results, plots and predictions.
+- [Covariates and informative
+  priors](https://daikikumakura.github.io/bayespk/articles/covariates-priors.html):
+  weight effects, borrowing from earlier studies, prior sensitivity.
+- [Two-compartment models and regimen
+  comparison](https://daikikumakura.github.io/bayespk/articles/two-compartment.html):
+  infusion data, comparing regimens, flip-flop.
+- [Function
+  reference](https://daikikumakura.github.io/bayespk/reference/).
+
+## What it covers
+
+- **Models:** linear 1- and 2-compartment; IV bolus, zero-order infusion
+  (`RATE`) and first-order oral absorption. Parameters `CL`, `V` (or
+  `CL`, `V1`, `Q`, `V2`) and `KA`; for oral dosing they are apparent
+  values (divided by bioavailability).
+- **Variability:** log-normal between-subject variability on any
+  parameter, optionally correlated.
+- **Covariates:** `CL ~ (WT / 70)^0.75` (fixed exponent),
+  `CL ~ (WT / 70)^b_wt` (estimated), `CL ~ exp(b_age * (AGE - 40))`,
+  `CL ~ (SEX == 1)^b_sex`.
+- **Residual error:** additive, proportional, combined, or additive on
+  the log scale.
+- **Flip-flop:** in oral models, `ka_faster = TRUE` keeps the typical KA
+  above the disposition rate when absorption is known to be faster than
+  distribution (off by default).
+
+Not in this version: user-written ODE models, Michaelis–Menten or
+target-mediated elimination, steady-state records, data below the
+quantification limit, inter-occasion variability, time-varying
+covariates and pharmacodynamics.
+
+## Validation and limitations
+
+Details are in
 [`inst/validation/README.md`](https://daikikumakura.github.io/bayespk/inst/validation/README.md).
-Summary as of 2026-11-17:
 
 - Closed-form concentrations agree with rxode2 ODE solutions (relative
-  error \< 1e-8, including KA equal to a disposition rate).
-- Simulation-based calibration: 1-cmt oral (200 replicates), 1-cmt oral
-  with an estimated weight exponent (200) and 2-cmt infusion (100). No
-  rank-uniformity test is significant after correction for the number of
+  error \< 1e-8).
+- Simulation-based calibration in three scenarios (100 to 200 replicates
+  each) shows no miscalibration after correction for the number of
   parameters.
-- Public data: theophylline and warfarin (nlmixr2data). Posterior
+- On the public theophylline and warfarin data (nlmixr2data), posterior
   medians of typical values are within 1–10% of nlmixr2 FOCEI estimates.
-- 2-cmt oral simulations (40 subjects, 20 replicates): 90% interval
-  coverage 0.85–0.95. Fits take about 15 minutes on one core.
+- **Limitations.** Fits are slower than FOCEI: 24 s against 10 s on
+  theophylline, and about 17 minutes on one core for a 40-subject
+  2-compartment oral study. In sparse 2-compartment oral designs the
+  variance parameters mix slowly. In 20 simulated studies, 8 fits had
+  zero divergences and maximum R-hat ≤ 1.01, and the others had R-hat up
+  to 1.021. Check `bpk_diagnostics(fit)` and `plot(fit, type = "trace")`
+  before interpreting results.
 
-See
-[`vignette("bayespk")`](https://daikikumakura.github.io/bayespk/articles/bayespk.md)
-for a walk-through.
+## Getting help
 
-The package check passed on Windows with R 4.5.3. In the 2-compartment
-oral simulation, only 4 of 40 fits had both zero divergences and maximum
-population R-hat at most 1.01. Inspect `summary(fit)` for the parameters
-with poor mixing, and use `bpk_diagnostics(fit)` to check divergences
-before interpreting predictions.
+Questions, bugs and requests for models: [GitHub
+issues](https://github.com/DaikiKumakura/bayespk/issues).
 
 ## Citation
 
-Kumakura D. bayespk: Bayesian Population Pharmacokinetics Without
-Writing Stan (version 0.1.0). Zenodo; 2026.
-<https://doi.org/10.5281/zenodo.24325846>
+``` r
+
+citation("bayespk")
+```
+
+Kumakura D (2026). bayespk: Bayesian Population Pharmacokinetics Without
+Writing Stan. <https://doi.org/10.5281/zenodo.24325845>

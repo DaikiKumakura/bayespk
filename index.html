@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="index.html">bayespk</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,6 +32,13 @@
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="articles/bayespk.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="articles/covariates-priors.html">Covariates and informative priors</a></li>
+    <li><a class="dropdown-item" href="articles/two-compartment.html">Two-compartment models and regimen comparison</a></li>
+  </ul>
+</li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
@@ -49,78 +56,119 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="bayespk">bayespk<a class="anchor" aria-label="anchor" href="#bayespk"></a>
 </h1></div>
-<p><a href="https://doi.org/10.5281/zenodo.24325846" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.24325846.svg" alt="DOI"></a></p>
+<p><a href="https://github.com/DaikiKumakura/bayespk/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/DaikiKumakura/bayespk/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="https://daikikumakura.r-universe.dev/bayespk" class="external-link"><img src="https://daikikumakura.r-universe.dev/badges/bayespk" alt="R-universe"></a> <a href="https://doi.org/10.5281/zenodo.24325845" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.24325845.svg" alt="DOI"></a></p>
 <p>Bayesian population pharmacokinetics in R <strong>without writing Stan</strong>.</p>
-<p>Describe the model in one line, pass a NONMEM-style data set as it is, and get posterior summaries, convergence diagnostics and predictions for new regimens. The Stan programs are precompiled and use closed-form solutions, so there is nothing to compile when you fit a model.</p>
-<blockquote>
-<p>Status: 0.1.0, first release. Not on CRAN. Validated as summarised below; known limitations are listed in <a href="inst/validation/README.html"><code>inst/validation/README.md</code></a>.</p>
-</blockquote>
+<ul>
+<li>
+<strong>One line per model.</strong> <code>pk_model("2cmt", route = "oral", iiv = c("CL", "V1", "KA"), covariates = list(CL ~ (WT / 70)^0.75))</code>.</li>
+<li>
+<strong>Your NONMEM data set as it is.</strong> <code>ID</code>, <code>TIME</code>, <code>DV</code>, <code>AMT</code>, <code>EVID</code>, <code>RATE</code>, <code>ADDL</code>/<code>II</code>, and <code>"."</code> for missing values.</li>
+<li>
+<strong>Nothing to compile.</strong> The Stan programs are precompiled and use closed-form solutions, so a fit starts at once. Binaries are on R-universe.</li>
+<li>
+<strong>Priors you can state and check.</strong> Use earlier studies with <code><a href="reference/pk_priors.html">pk_priors()</a></code>. Defaults are printed, and <code><a href="reference/prior_sensitivity.html">prior_sensitivity()</a></code> shows whether conclusions depend on the prior.</li>
+<li>
+<strong>Diagnostics by default.</strong> Warnings for divergences, R-hat, effective sample size and chains stuck in different modes.</li>
+<li>
+<strong>Predictions for new regimens.</strong> Simulate new subjects from the posterior, with uncertainty and between-subject variability.</li>
+</ul>
+<div class="section level2">
+<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/DaikiKumakura/bayespk" class="external-link">bayespk</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">nlmixr2data</span><span class="fu">::</span><span class="va"><a href="https://nlmixr2.github.io/nlmixr2data/reference/theo_sd.html" class="external-link">theo_sd</a></span>   <span class="co"># 12 subjects, oral theophylline</span></span>
-<span></span>
 <span><span class="va">mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pk_model.html">pk_model</a></span><span class="op">(</span><span class="st">"1cmt"</span>, route <span class="op">=</span> <span class="st">"oral"</span>, iiv <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CL"</span>, <span class="st">"V"</span>, <span class="st">"KA"</span><span class="op">)</span>, error <span class="op">=</span> <span class="st">"proportional"</span><span class="op">)</span></span>
-<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bpk_fit.html">bpk_fit</a></span><span class="op">(</span><span class="va">mod</span>, <span class="va">d</span>, chains <span class="op">=</span> <span class="fl">4</span>, cores <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bpk_fit.html">bpk_fit</a></span><span class="op">(</span><span class="va">mod</span>, <span class="va">bpk_example</span>, chains <span class="op">=</span> <span class="fl">4</span>, cores <span class="op">=</span> <span class="fl">4</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>   <span class="co"># 30 simulated subjects</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    variable   mean     sd     q5    q50    q95 rhat ess_bulk ess_tail</span></span>
+<span><span class="co">#&gt;          CL  2.860 0.1420  2.630  2.860  3.100 1.00     6530     2740</span></span>
+<span><span class="co">#&gt;           V 27.700 1.6400 25.100 27.700 30.600 1.00     4760     3040</span></span>
+<span><span class="co">#&gt;          KA  0.976 0.0905  0.840  0.971  1.130 1.00     4750     2980</span></span>
+<span><span class="co">#&gt;    omega_CL  0.257 0.0405  0.199  0.252  0.330 1.01      910     1500</span></span>
+<span><span class="co">#&gt;     omega_V  0.298 0.0486  0.226  0.295  0.384 1.00     1050     2090</span></span>
+<span><span class="co">#&gt;    omega_KA  0.365 0.0849  0.238  0.358  0.515 1.00     1490     2030</span></span>
+<span><span class="co">#&gt;  sigma_prop  0.157 0.0117  0.139  0.156  0.176 1.00     2030     2860</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>                                        <span class="co"># posterior summaries and diagnostics</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>                                        <span class="co"># individual predictions at observed times</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fit</span>, regimen <span class="op">=</span> <span class="fu"><a href="reference/dose_regimen.html">dose_regimen</a></span><span class="op">(</span><span class="fl">320</span>, ii <span class="op">=</span> <span class="fl">12</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span>   <span class="co"># a new regimen</span></span></code></pre></div>
-<div class="section level2">
-<h2 id="what-it-does">What it does<a class="anchor" aria-label="anchor" href="#what-it-does"></a>
-</h2>
-<ul>
-<li>
-<strong>Models:</strong> linear 1- and 2-compartment; IV bolus, zero-order infusion (<code>RATE</code>) and first-order oral absorption. Parameters <code>CL</code>, <code>V</code> (or <code>CL</code>, <code>V1</code>, <code>Q</code>, <code>V2</code>) and <code>KA</code>. For oral dosing the parameters are apparent values (divided by bioavailability).</li>
-<li>
-<strong>Variability:</strong> log-normal between-subject variability on any parameter, optionally correlated.</li>
-<li>
-<strong>Covariates:</strong> written as formulas, for example <code>CL ~ (WT / 70)^0.75</code> (fixed exponent), <code>CL ~ (WT / 70)^b_wt</code> (estimated), <code>CL ~ exp(b_age * (AGE - 40))</code>, <code>CL ~ (SEX == 1)^b_sex</code>.</li>
-<li>
-<strong>Residual error:</strong> additive, proportional, combined, or additive on the log scale.</li>
-<li>
-<strong>Priors:</strong> <code>pk_priors(CL = lognormal(log(5), 0.5), b_wt = normal(0.75, 0.2), omega = half_normal(0.5))</code>. Anything not given gets a weakly informative default, which is printed and stored with the fit.</li>
-<li>
-<strong>Flip-flop:</strong> in oral models, <code>ka_faster = TRUE</code> constrains the typical KA above the disposition rate when absorption is known to be faster than distribution (off by default).</li>
-<li>
-<strong>Diagnostics by default:</strong> divergent transitions, tree depth, E-BFMI, R-hat and effective sample sizes, and a check that chains did not settle in different modes, with warnings. <code><a href="reference/prior_sensitivity.html">prior_sensitivity()</a></code> runs power-scaling sensitivity (priorsense).</li>
-</ul>
-<p>Not in this version: user-written ODE models, Michaelis–Menten or target-mediated elimination, steady-state records, below-quantification data, inter-occasion variability, time-varying covariates and pharmacodynamics.</p>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span>   <span class="co"># individual fits</span></span></code></pre></div>
+<div class="float">
+<img src="reference/figures/README-individual.png" alt="Individual fits: observed concentrations (red) with posterior median and 90% interval per subject"><div class="figcaption">Individual fits: observed concentrations (red) with posterior median and 90% interval per subject</div>
 </div>
-<div class="section level2">
-<h2 id="data">Data<a class="anchor" aria-label="anchor" href="#data"></a>
-</h2>
-<p>Columns <code>ID</code>, <code>TIME</code>, <code>DV</code>, <code>AMT</code> and optionally <code>EVID</code>, <code>MDV</code>, <code>RATE</code>, <code>ADDL</code>, <code>II</code>, as in NONMEM. <code>"."</code> is read as missing. Observations at or before the first dose are dropped with a message.</p>
+<p>Compare dosing regimens for new patients (from the <a href="https://daikikumakura.github.io/bayespk/articles/two-compartment.html">two-compartment vignette</a>):</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fit2</span>, regimen <span class="op">=</span> <span class="fu"><a href="reference/dose_regimen.html">dose_regimen</a></span><span class="op">(</span><span class="fl">500</span>, ii <span class="op">=</span> <span class="fl">12</span>, n <span class="op">=</span> <span class="fl">8</span>, rate <span class="op">=</span> <span class="fl">500</span><span class="op">)</span>, times <span class="op">=</span> <span class="va">t</span><span class="op">)</span></span>
+<span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">fit2</span>, regimen <span class="op">=</span> <span class="fu"><a href="reference/dose_regimen.html">dose_regimen</a></span><span class="op">(</span><span class="fl">1000</span>, ii <span class="op">=</span> <span class="fl">24</span>, n <span class="op">=</span> <span class="fl">4</span>, rate <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>, times <span class="op">=</span> <span class="va">t</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">a</span>, compare <span class="op">=</span> <span class="va">b</span>, log <span class="op">=</span> <span class="cn">TRUE</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"500 mg every 12 h"</span>, <span class="st">"1000 mg every 24 h"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="float">
+<img src="reference/figures/README-regimens.png" alt="Predicted concentrations for two regimens, median and 90% interval of new subjects"><div class="figcaption">Predicted concentrations for two regimens, median and 90% interval of new subjects</div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>From R-universe (binaries for Windows and macOS):</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"bayespk"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://daikikumakura.r-universe.dev"</span>, <span class="st">"https://cloud.r-project.org"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>From GitHub (compiles the Stan program once; a C++ toolchain is needed, about 1.5 minutes on Windows):</p>
+<p>From R-universe (binaries for Windows, macOS and Linux):</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"bayespk"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"https://daikikumakura.r-universe.dev"</span>, <span class="st">"https://cloud.r-project.org"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>From GitHub (compiles the Stan program once; needs a C++ toolchain, about 1.5 minutes on Windows):</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"DaikiKumakura/bayespk"</span><span class="op">)</span></span></code></pre></div>
 <p>Not on CRAN.</p>
 </div>
 <div class="section level2">
-<h2 id="validation">Validation<a class="anchor" aria-label="anchor" href="#validation"></a>
+<h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
 </h2>
-<p>Scripts are in <code>inst/validation</code>; results and known limitations are in <a href="inst/validation/README.html"><code>inst/validation/README.md</code></a>. Summary as of 2026-11-17:</p>
 <ul>
-<li>Closed-form concentrations agree with rxode2 ODE solutions (relative error &lt; 1e-8, including KA equal to a disposition rate).</li>
-<li>Simulation-based calibration: 1-cmt oral (200 replicates), 1-cmt oral with an estimated weight exponent (200) and 2-cmt infusion (100). No rank-uniformity test is significant after correction for the number of parameters.</li>
-<li>Public data: theophylline and warfarin (nlmixr2data). Posterior medians of typical values are within 1–10% of nlmixr2 FOCEI estimates.</li>
-<li>2-cmt oral simulations (40 subjects, 20 replicates): 90% interval coverage 0.85–0.95. Fits take about 15 minutes on one core.</li>
+<li>
+<a href="https://daikikumakura.github.io/bayespk/articles/bayespk.html">Getting started</a>: model, fit, results, plots and predictions.</li>
+<li>
+<a href="https://daikikumakura.github.io/bayespk/articles/covariates-priors.html">Covariates and informative priors</a>: weight effects, borrowing from earlier studies, prior sensitivity.</li>
+<li>
+<a href="https://daikikumakura.github.io/bayespk/articles/two-compartment.html">Two-compartment models and regimen comparison</a>: infusion data, comparing regimens, flip-flop.</li>
+<li>
+<a href="https://daikikumakura.github.io/bayespk/reference/">Function reference</a>.</li>
 </ul>
-<p>See <code><a href="articles/bayespk.html">vignette("bayespk")</a></code> for a walk-through.</p>
-<p>The package check passed on Windows with R 4.5.3. In the 2-compartment oral simulation, only 4 of 40 fits had both zero divergences and maximum population R-hat at most 1.01. Inspect <code>summary(fit)</code> for the parameters with poor mixing, and use <code>bpk_diagnostics(fit)</code> to check divergences before interpreting predictions.</p>
+</div>
+<div class="section level2">
+<h2 id="what-it-covers">What it covers<a class="anchor" aria-label="anchor" href="#what-it-covers"></a>
+</h2>
+<ul>
+<li>
+<strong>Models:</strong> linear 1- and 2-compartment; IV bolus, zero-order infusion (<code>RATE</code>) and first-order oral absorption. Parameters <code>CL</code>, <code>V</code> (or <code>CL</code>, <code>V1</code>, <code>Q</code>, <code>V2</code>) and <code>KA</code>; for oral dosing they are apparent values (divided by bioavailability).</li>
+<li>
+<strong>Variability:</strong> log-normal between-subject variability on any parameter, optionally correlated.</li>
+<li>
+<strong>Covariates:</strong> <code>CL ~ (WT / 70)^0.75</code> (fixed exponent), <code>CL ~ (WT / 70)^b_wt</code> (estimated), <code>CL ~ exp(b_age * (AGE - 40))</code>, <code>CL ~ (SEX == 1)^b_sex</code>.</li>
+<li>
+<strong>Residual error:</strong> additive, proportional, combined, or additive on the log scale.</li>
+<li>
+<strong>Flip-flop:</strong> in oral models, <code>ka_faster = TRUE</code> keeps the typical KA above the disposition rate when absorption is known to be faster than distribution (off by default).</li>
+</ul>
+<p>Not in this version: user-written ODE models, Michaelis–Menten or target-mediated elimination, steady-state records, data below the quantification limit, inter-occasion variability, time-varying covariates and pharmacodynamics.</p>
+</div>
+<div class="section level2">
+<h2 id="validation-and-limitations">Validation and limitations<a class="anchor" aria-label="anchor" href="#validation-and-limitations"></a>
+</h2>
+<p>Details are in <a href="inst/validation/README.html"><code>inst/validation/README.md</code></a>.</p>
+<ul>
+<li>Closed-form concentrations agree with rxode2 ODE solutions (relative error &lt; 1e-8).</li>
+<li>Simulation-based calibration in three scenarios (100 to 200 replicates each) shows no miscalibration after correction for the number of parameters.</li>
+<li>On the public theophylline and warfarin data (nlmixr2data), posterior medians of typical values are within 1–10% of nlmixr2 FOCEI estimates.</li>
+<li>
+<strong>Limitations.</strong> Fits are slower than FOCEI: 24 s against 10 s on theophylline, and about 17 minutes on one core for a 40-subject 2-compartment oral study. In sparse 2-compartment oral designs the variance parameters mix slowly. In 20 simulated studies, 8 fits had zero divergences and maximum R-hat ≤ 1.01, and the others had R-hat up to 1.021. Check <code>bpk_diagnostics(fit)</code> and <code>plot(fit, type = "trace")</code> before interpreting results.</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="getting-help">Getting help<a class="anchor" aria-label="anchor" href="#getting-help"></a>
+</h2>
+<p>Questions, bugs and requests for models: <a href="https://github.com/DaikiKumakura/bayespk/issues" class="external-link">GitHub issues</a>.</p>
 </div>
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
-<p>Kumakura D. bayespk: Bayesian Population Pharmacokinetics Without Writing Stan (version 0.1.0). Zenodo; 2026. <a href="https://doi.org/10.5281/zenodo.24325846" class="external-link uri">https://doi.org/10.5281/zenodo.24325846</a></p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"bayespk"</span><span class="op">)</span></span></code></pre></div>
+<p>Kumakura D (2026). bayespk: Bayesian Population Pharmacokinetics Without Writing Stan. <a href="https://doi.org/10.5281/zenodo.24325845" class="external-link uri">https://doi.org/10.5281/zenodo.24325845</a></p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">

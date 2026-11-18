@@ -31,18 +31,13 @@ A data frame of posterior summaries and convergence diagnostics.
 
 ``` r
 # \donttest{
-if (requireNamespace("nlmixr2data", quietly = TRUE)) {
-d <- nlmixr2data::theo_sd
 mod <- pk_model("1cmt", route = "oral", iiv = c("CL", "V", "KA"))
-fit <- bpk_fit(mod, d, chains = 2, iter = 1000, seed = 1)
-summary(fit, probs = c(0.025, 0.5, 0.975))
-}
-#> 12 observation(s) at or before the first dose were dropped.
+fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 #> 
 #> SAMPLING FOR MODEL 'popk' NOW (CHAIN 1).
 #> Chain 1: 
-#> Chain 1: Gradient evaluation took 0.000126 seconds
-#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.26 seconds.
+#> Chain 1: Gradient evaluation took 0.000186 seconds
+#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.86 seconds.
 #> Chain 1: Adjust your expectations accordingly!
 #> Chain 1: 
 #> Chain 1: 
@@ -59,15 +54,15 @@ summary(fit, probs = c(0.025, 0.5, 0.975))
 #> Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)
 #> Chain 1: 
-#> Chain 1:  Elapsed Time: 3.556 seconds (Warm-up)
-#> Chain 1:                1.705 seconds (Sampling)
-#> Chain 1:                5.261 seconds (Total)
+#> Chain 1:  Elapsed Time: 9.501 seconds (Warm-up)
+#> Chain 1:                3.107 seconds (Sampling)
+#> Chain 1:                12.608 seconds (Total)
 #> Chain 1: 
 #> 
 #> SAMPLING FOR MODEL 'popk' NOW (CHAIN 2).
 #> Chain 2: 
-#> Chain 2: Gradient evaluation took 0.00016 seconds
-#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 1.6 seconds.
+#> Chain 2: Gradient evaluation took 0.000176 seconds
+#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 1.76 seconds.
 #> Chain 2: Adjust your expectations accordingly!
 #> Chain 2: 
 #> Chain 2: 
@@ -84,22 +79,19 @@ summary(fit, probs = c(0.025, 0.5, 0.975))
 #> Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)
 #> Chain 2: 
-#> Chain 2:  Elapsed Time: 3.332 seconds (Warm-up)
-#> Chain 2:                1.713 seconds (Sampling)
-#> Chain 2:                5.045 seconds (Total)
+#> Chain 2:  Elapsed Time: 10.576 seconds (Warm-up)
+#> Chain 2:                3.378 seconds (Sampling)
+#> Chain 2:                13.954 seconds (Total)
 #> Chain 2: 
-#> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
-#> Running the chains for more iterations may help. See
-#> https://mc-stan.org/misc/warnings.html#bulk-ess
-#> Warning: R-hat > 1.01 (maximum 1.014) for omega_CL; chains have not mixed. Run longer (iter) before using the results.
-#> Warning: Smallest effective sample size 200 (bulk) / 318 (tail) < 400.
-#>    variable   mean     sd    q2.5    q50  q97.5  rhat ess_bulk ess_tail
-#>          CL  2.750 0.2470  2.2500  2.750  3.240 0.999     1590      657
-#>           V 32.400 1.7500 29.2000 32.300 36.100 1.000     1390      703
-#>          KA  1.580 0.3920  1.0100  1.540  2.450 1.000     1810      691
-#>    omega_CL  0.292 0.0809  0.1750  0.277  0.494 1.010      200      408
-#>     omega_V  0.144 0.0519  0.0519  0.139  0.260 1.000      295      318
-#>    omega_KA  0.754 0.2080  0.4390  0.725  1.270 1.010      269      486
-#>  sigma_prop  0.163 0.0134  0.1410  0.162  0.192 1.000      484      609
+#> Warning: Smallest effective sample size 271 (bulk) / 333 (tail) < 400.
+summary(fit, probs = c(0.025, 0.5, 0.975))
+#>    variable   mean     sd   q2.5    q50  q97.5  rhat ess_bulk ess_tail
+#>          CL  2.860 0.1380  2.580  2.860  3.130 1.000     1250      756
+#>           V 27.800 1.7900 24.600 27.700 31.700 1.000     1390      625
+#>          KA  0.982 0.0983  0.813  0.974  1.190 1.000     1370      877
+#>    omega_CL  0.260 0.0413  0.191  0.255  0.354 1.000      271      333
+#>     omega_V  0.299 0.0500  0.219  0.292  0.414 1.010      373      538
+#>    omega_KA  0.371 0.0909  0.226  0.361  0.563 1.000      425      447
+#>  sigma_prop  0.156 0.0115  0.136  0.156  0.181 0.999      624      799
 # }
 ```

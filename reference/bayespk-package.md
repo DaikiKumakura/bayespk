@@ -9,6 +9,16 @@ solutions.
 Stan Development Team. RStan: the R interface to Stan.
 https://mc-stan.org
 
+## See also
+
+Useful links:
+
+- <https://github.com/DaikiKumakura/bayespk>
+
+- <https://daikikumakura.github.io/bayespk/>
+
+- Report bugs at <https://github.com/DaikiKumakura/bayespk/issues>
+
 ## Author
 
 **Maintainer**: Daiki Kumakura
