@@ -1,0 +1,81 @@
+---
+title: "Two-compartment models and regimen comparison"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Two-compartment models and regimen comparison}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.path = "figures/two-",
+                      fig.width = 7, fig.height = 4.5, dpi = 96, out.width = "100%")
+```
+
+<!-- Precomputed: this file is generated from vignettes/src/two-compartment.Rmd.orig. -->
+
+```{r}
+library(bayespk)
+```
+
+## Simulate an infusion study
+
+`pk_conc()` uses the same closed-form solutions as the model, so it can simulate data. Here, 20 subjects receive a 1-hour infusion of 500 mg (`RATE = 500`) and are sampled up to 48 hours:
+
+```{r sim}
+set.seed(1)
+truth <- c(CL = 4, V1 = 20, Q = 6, V2 = 60)
+times <- c(0.5, 1, 2, 3, 4, 6, 8, 12, 24, 36, 48)
+d <- do.call(rbind, lapply(1:20, function(i) {
+  par <- truth * exp(c(rnorm(2, 0, c(0.3, 0.2)), 0, 0))
+  conc <- pk_conc(times, dose_regimen(500, rate = 500), par, "2cmt", "iv")
+  rbind(data.frame(ID = i, TIME = 0, AMT = 500, RATE = 500, DV = NA, EVID = 1),
+        data.frame(ID = i, TIME = times, AMT = 0, RATE = 0,
+                   DV = conc * (1 + rnorm(length(times), 0, 0.1)), EVID = 0))
+}))
+head(d)
+```
+
+## Fit
+
+```{r fit2}
+mod2 <- pk_model("2cmt", route = "iv", iiv = c("CL", "V1"), error = "proportional")
+fit2 <- bpk_fit(mod2, d, chains = 4, cores = 4, seed = 1)
+summary(fit2)
+```
+
+The simulated values were CL 4, V1 20, Q 6 and V2 60, with between-subject SDs of 0.3 and 0.2 and a residual SD of 0.1. The fit took `r round(fit2$seconds)` seconds.
+
+```{r ind2, fig.height = 6}
+plot(fit2, log = TRUE, xlab = "Time (h)", ylab = "Concentration (mg/L)")
+```
+
+## Compare regimens
+
+Posterior predictions answer questions such as "which regimen keeps more new patients above 5 mg/L at the end of the dosing interval?" `predict()` returns quantiles. For other summaries, use the draws (`bpk_draws()`) with `pk_conc()`.
+
+```{r regimens}
+t <- seq(0, 96, 0.5)
+a <- predict(fit2, regimen = dose_regimen(500, ii = 12, n = 8, rate = 500), times = t)
+b <- predict(fit2, regimen = dose_regimen(1000, ii = 24, n = 4, rate = 1000), times = t)
+plot(a, compare = b, log = TRUE, labels = c("500 mg every 12 h", "1000 mg every 24 h"),
+     main = "Two regimens, new subjects", xlab = "Time (h)", ylab = "Concentration (mg/L)")
+abline(h = 5, col = "#999999", lty = 3)
+```
+
+Concentrations at 96 hours, the end of the last interval of both regimens (5%, 50% and 95% of new subjects):
+
+```{r troughs}
+rbind(q12h = unlist(a[a$TIME == 96, c("q5", "q50", "q95")]),
+      q24h = unlist(b[b$TIME == 96, c("q5", "q50", "q95")]))
+```
+
+## Oral two-compartment models and flip-flop
+
+With oral dosing, the absorption rate KA and the fast disposition rate can swap: two parameter sets then fit the data equally well. If that happens, `bpk_fit()` warns that the chains settled in different regions and shows the chain medians. When absorption is known to be faster than distribution, `ka_faster = TRUE` constrains the typical KA above the disposition rate and removes the second mode:
+
+```{r, eval = FALSE}
+pk_model("2cmt", route = "oral", iiv = c("CL", "V1", "KA"), ka_faster = TRUE)
+```
+
+Do not use it for drugs whose absorption is slower than distribution (flip-flop kinetics, for example many extended-release forms).

@@ -22,12 +22,9 @@
 #' @return An object of class `bpk_fit`.
 #' @examples
 #' \donttest{
-#' if (requireNamespace("nlmixr2data", quietly = TRUE)) {
-#' d <- nlmixr2data::theo_sd
 #' mod <- pk_model("1cmt", route = "oral", iiv = c("CL", "V", "KA"))
-#' fit <- bpk_fit(mod, d, chains = 2, iter = 1000, seed = 1)
+#' fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 #' summary(fit)
-#' }
 #' }
 #' @export
 bpk_fit <- function(model, data, priors = NULL, chains = 4, iter = 2000,
@@ -136,12 +133,9 @@ make_init <- function(sdata, chains, seed) {
 #'   variability (log scale), correlations and residual error.
 #' @examples
 #' \donttest{
-#' if (requireNamespace("nlmixr2data", quietly = TRUE)) {
-#' d <- nlmixr2data::theo_sd
 #' mod <- pk_model("1cmt", route = "oral", iiv = c("CL", "V", "KA"))
-#' fit <- bpk_fit(mod, d, chains = 2, iter = 1000, seed = 1)
+#' fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 #' head(posterior::as_draws_df(bpk_draws(fit)))
-#' }
 #' }
 #' @export
 bpk_draws <- function(x) {
@@ -206,12 +200,9 @@ abind3 <- function(...) {
 #'   tail effective sample sizes of the population parameters.
 #' @examples
 #' \donttest{
-#' if (requireNamespace("nlmixr2data", quietly = TRUE)) {
-#' d <- nlmixr2data::theo_sd
 #' mod <- pk_model("1cmt", route = "oral", iiv = c("CL", "V", "KA"))
-#' fit <- bpk_fit(mod, d, chains = 2, iter = 1000, seed = 1)
+#' fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 #' bpk_diagnostics(fit)
-#' }
 #' }
 #' @export
 bpk_diagnostics <- function(x) {
@@ -298,12 +289,9 @@ print.bpk_fit <- function(x, digits = 3, ...) {
 #' @method summary bpk_fit
 #' @examples
 #' \donttest{
-#' if (requireNamespace("nlmixr2data", quietly = TRUE)) {
-#' d <- nlmixr2data::theo_sd
 #' mod <- pk_model("1cmt", route = "oral", iiv = c("CL", "V", "KA"))
-#' fit <- bpk_fit(mod, d, chains = 2, iter = 1000, seed = 1)
+#' fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 #' summary(fit, probs = c(0.025, 0.5, 0.975))
-#' }
 #' }
 #' @export
 summary.bpk_fit <- function(object, probs = c(0.05, 0.5, 0.95), ...) {
@@ -337,18 +325,18 @@ print.bpk_summary <- function(x, digits = 3, ...) {
 #' @return The result of [priorsense::powerscale_sensitivity()].
 #' @examples
 #' \donttest{
-#' if (requireNamespace("nlmixr2data", quietly = TRUE)) {
-#' d <- nlmixr2data::theo_sd
 #' mod <- pk_model("1cmt", route = "oral", iiv = c("CL", "V", "KA"))
-#' fit <- bpk_fit(mod, d, chains = 2, iter = 1000, seed = 1)
+#' fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 #' if (requireNamespace("priorsense", quietly = TRUE)) prior_sensitivity(fit)
-#' }
 #' }
 #' @export
 prior_sensitivity <- function(x, ...) {
   if (!requireNamespace("priorsense", quietly = TRUE)) {
     stop("Install the 'priorsense' package to use prior_sensitivity().", call. = FALSE)
   }
-  vars <- c("log_theta", if (x$stan_data$n_beta) "beta", if (x$stan_data$n_eta) "omega", "sigma")
-  priorsense::powerscale_sensitivity(x$stanfit, variable = vars, ...)
+  pop <- posterior::as_draws_df(bpk_draws(x))
+  extra <- posterior::subset_draws(posterior::as_draws_df(x$stanfit),
+                                   variable = c("lprior", "log_lik"))
+  d <- posterior::bind_draws(pop, extra)
+  priorsense::powerscale_sensitivity(d, variable = posterior::variables(pop), ...)
 }

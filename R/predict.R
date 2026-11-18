@@ -10,7 +10,9 @@
 #' @param object A `bpk_fit`.
 #' @param regimen Optional dosing regimen from [dose_regimen()].
 #' @param times Times for `regimen` predictions (default: 100 points over the
-#'   regimen plus one dosing interval).
+#'   regimen plus one dosing interval). Without `regimen`, giving `times`
+#'   returns each subject's prediction at these times instead of at the
+#'   observed times (`DV` is then `NA`).
 #' @param type `"population"` or `"typical"` (used with `regimen`).
 #' @param covariates Named list of covariate values for `regimen` predictions;
 #'   unspecified covariates are set to the reference value of each term
@@ -24,12 +26,9 @@
 #' @return A data frame of predictions with quantiles.
 #' @examples
 #' \donttest{
-#' if (requireNamespace("nlmixr2data", quietly = TRUE)) {
-#' d <- nlmixr2data::theo_sd
 #' mod <- pk_model("1cmt", route = "oral", iiv = c("CL", "V", "KA"))
-#' fit <- bpk_fit(mod, d, chains = 2, iter = 1000, seed = 1)
-#' predict(fit, regimen = dose_regimen(320, ii = 12, n = 3), ndraws = 200)
-#' }
+#' fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
+#' predict(fit, regimen = dose_regimen(100, ii = 12, n = 3), ndraws = 200)
 #' }
 #' @export
 predict.bpk_fit <- function(object, regimen = NULL, times = NULL,
@@ -64,21 +63,29 @@ predict.bpk_fit <- function(object, regimen = NULL, times = NULL,
 
   if (is.null(regimen)) {
     obs <- object$prep$obs
-    out <- matrix(NA_real_, length(draws), nrow(obs))
+    # Individual predictions at the observed times, or on `times` for every subject.
+    grid <- if (is.null(times)) {
+      data.frame(sid = obs$sid, time = obs$time, dv = obs$dv)
+    } else {
+      expand <- lapply(seq_len(object$prep$N), function(i) data.frame(sid = i, time = times, dv = NA_real_))
+      do.call(rbind, expand)
+    }
+    out <- matrix(NA_real_, length(draws), nrow(grid))
     for (i in seq_len(object$prep$N)) {
       par <- lapply(seq_along(pars), function(k) exp(ex$log_par[draws, i, k]))
       names(par) <- pars
       d <- object$prep$dose[object$prep$dose$sid == i, ]
-      for (n in which(obs$sid == i)) {
+      for (n in which(grid$sid == i)) {
         conc <- 0
         for (j in seq_len(nrow(d))) {
-          conc <- conc + dose_conc_r(obs$time[n] - d$time[j], d$amt[j], d$rate[j], par,
+          conc <- conc + dose_conc_r(grid$time[n] - d$time[j], d$amt[j], d$rate[j], par,
                                      m$structure, m$route)
         }
         out[, n] <- add_res(conc, ex$sigma)
       }
     }
-    return(data.frame(ID = object$prep$ids[obs$sid], TIME = obs$time, DV = obs$dv, qtab(out)))
+    res <- data.frame(ID = object$prep$ids[grid$sid], TIME = grid$time, DV = grid$dv, qtab(out))
+    return(new_prediction(res, "individual", probs))
   }
 
   if (is.null(regimen$rate)) regimen$rate <- 0
@@ -127,5 +134,10 @@ predict.bpk_fit <- function(object, regimen = NULL, times = NULL,
     }
     out[, n] <- add_res(conc, ex$sigma)
   }
-  data.frame(TIME = times, qtab(out))
+  new_prediction(data.frame(TIME = times, qtab(out)), "regimen", probs, regimen)
+}
+
+new_prediction <- function(x, kind, probs, regimen = NULL) {
+  structure(x, class = c("bpk_prediction", "data.frame"), kind = kind, probs = probs,
+            regimen = regimen)
 }

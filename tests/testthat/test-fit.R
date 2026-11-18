@@ -74,3 +74,26 @@ test_that("ka_faster keeps typical KA above the disposition rate", {
   alpha <- (s + sqrt(s^2 - 4 * k10 * k21)) / 2
   expect_true(all(dr[, "KA"] > alpha))
 })
+
+test_that("plots draw without error and predictions keep their class", {
+  skip_on_cran()
+  fit <- quick_fit(pk_model("1cmt", "oral", iiv = c("CL", "V")), bpk_example)
+  pdf(NULL)
+  on.exit(grDevices::dev.off())
+  expect_invisible(plot(fit))
+  expect_invisible(plot(fit, type = "obs_pred"))
+  expect_invisible(plot(fit, type = "trace"))
+  pp <- predict(fit, regimen = dose_regimen(100, ii = 12, n = 3), ndraws = 50)
+  expect_s3_class(pp, "bpk_prediction")
+  expect_s3_class(pp, "data.frame")
+  expect_invisible(plot(pp, log = TRUE))
+  expect_equal(nrow(bpk_example[bpk_example$EVID == 1, ]), 30)
+})
+
+test_that("individual predictions on a time grid cover every subject", {
+  skip_on_cran()
+  fit <- quick_fit(pk_model("1cmt", "oral", iiv = "CL"), bpk_example)
+  g <- predict(fit, times = c(1, 2, 3), ndraws = 20)
+  expect_equal(nrow(g), 3 * length(unique(bpk_example$ID)))
+  expect_true(all(is.na(g$DV)))
+})

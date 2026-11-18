@@ -23,7 +23,9 @@
 \item{regimen}{Optional dosing regimen from \code{\link[=dose_regimen]{dose_regimen()}}.}
 
 \item{times}{Times for \code{regimen} predictions (default: 100 points over the
-regimen plus one dosing interval).}
+regimen plus one dosing interval). Without \code{regimen}, giving \code{times}
+returns each subject's prediction at these times instead of at the
+observed times (\code{DV} is then \code{NA}).}
 
 \item{type}{\code{"population"} or \code{"typical"} (used with \code{regimen}).}
 
@@ -55,11 +57,8 @@ solutions; no refit is needed.
 }
 \examples{
 \donttest{
-if (requireNamespace("nlmixr2data", quietly = TRUE)) {
-d <- nlmixr2data::theo_sd
 mod <- pk_model("1cmt", route = "oral", iiv = c("CL", "V", "KA"))
-fit <- bpk_fit(mod, d, chains = 2, iter = 1000, seed = 1)
-predict(fit, regimen = dose_regimen(320, ii = 12, n = 3), ndraws = 200)
-}
+fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
+predict(fit, regimen = dose_regimen(100, ii = 12, n = 3), ndraws = 200)
 }
 }

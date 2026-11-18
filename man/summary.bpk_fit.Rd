@@ -21,11 +21,8 @@ Summarise a fit
 }
 \examples{
 \donttest{
-if (requireNamespace("nlmixr2data", quietly = TRUE)) {
-d <- nlmixr2data::theo_sd
 mod <- pk_model("1cmt", route = "oral", iiv = c("CL", "V", "KA"))
-fit <- bpk_fit(mod, d, chains = 2, iter = 1000, seed = 1)
+fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 summary(fit, probs = c(0.025, 0.5, 0.975))
-}
 }
 }

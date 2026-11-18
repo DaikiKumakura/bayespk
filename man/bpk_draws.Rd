@@ -19,11 +19,8 @@ Posterior draws of population parameters
 }
 \examples{
 \donttest{
-if (requireNamespace("nlmixr2data", quietly = TRUE)) {
-d <- nlmixr2data::theo_sd
 mod <- pk_model("1cmt", route = "oral", iiv = c("CL", "V", "KA"))
-fit <- bpk_fit(mod, d, chains = 2, iter = 1000, seed = 1)
+fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 head(posterior::as_draws_df(bpk_draws(fit)))
-}
 }
 }

@@ -1,0 +1,98 @@
+---
+title: "Getting started with bayespk"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with bayespk}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.path = "figures/start-",
+                      fig.width = 7, fig.height = 4.5, dpi = 96, out.width = "100%")
+```
+
+<!-- Precomputed: this file is generated from vignettes/src/bayespk.Rmd.orig. -->
+
+bayespk fits Bayesian population pharmacokinetic (PK) models without writing Stan. There are three steps: describe the model with `pk_model()`, fit it with `bpk_fit()`, and look at the results with `summary()`, `plot()` and `predict()`.
+
+This vignette uses `bpk_example`, a simulated study that comes with the package: 30 subjects with a single oral dose of 100 or 200 mg, with rich sampling for every third subject and sparse sampling for the others.
+
+```{r}
+library(bayespk)
+head(bpk_example, 6)
+```
+
+The data are in NONMEM format: one row per dose (`EVID = 1`, `AMT`) or observation (`EVID = 0`, `DV`). Other columns such as `WT` are covariates. `RATE`, `MDV`, `ADDL` and `II` are read if present, and `"."` counts as missing.
+
+## 1. Describe the model
+
+```{r}
+mod <- pk_model("1cmt", route = "oral", iiv = c("CL", "V", "KA"), error = "proportional")
+mod
+```
+
+`iiv` lists the parameters with log-normal between-subject variability. Structures are `"1cmt"` and `"2cmt"`; routes are `"iv"` (bolus, or infusion from `RATE`) and `"oral"`.
+
+## 2. Fit
+
+```{r fit}
+fit <- bpk_fit(mod, bpk_example, chains = 4, cores = 4, seed = 1)
+fit
+```
+
+Priors not given are set to weakly informative defaults; they are listed with the fit (`fit$priors`). The model is precompiled, so nothing is compiled here. This fit took `r round(fit$seconds)` seconds with 4 chains on 4 cores.
+
+`bpk_fit()` warns about divergent transitions, R-hat above 1.01, low effective sample size and chains that settled in different modes. The numbers are also available directly:
+
+```{r}
+d <- bpk_diagnostics(fit)
+d[c("divergent", "rhat_max", "ess_bulk_min")]
+```
+
+## 3. Results
+
+```{r}
+summary(fit)
+```
+
+The data were simulated with CL = 3 L/h, V = 30 L and KA = 1.2 1/h for a 70 kg subject, with between-subject SDs of 0.3, 0.2 and 0.4 and a proportional residual SD of 0.15. Estimates differ from these values partly because 30 simulated subjects are a sample: in this sample, the geometric mean of the individual KA values is 1.13, at the upper end of the 90% interval. The model above also ignores weight, so the between-subject SDs of CL and V also absorb the weight effect; the [covariates vignette](covariates-priors.html) adds it.
+
+Individual fits, one panel per subject (median and 90% interval, observations in red):
+
+```{r individual, fig.height = 6}
+plot(fit, xlab = "Time (h)", ylab = "Concentration (mg/L)")
+```
+
+Observed against predicted concentrations:
+
+```{r obs-pred, fig.width = 5, fig.height = 5, out.width = "60%"}
+plot(fit, type = "obs_pred", xlab = "Predicted (mg/L)", ylab = "Observed (mg/L)")
+```
+
+Trace plots of the population parameters; overlapping chains mean they mixed:
+
+```{r trace, fig.height = 6}
+plot(fit, type = "trace")
+```
+
+## 4. Predict a new regimen
+
+`predict()` with a `regimen` simulates new subjects from the posterior. The prediction includes uncertainty in the population parameters and between-subject variability. `type = "typical"` drops the between-subject variability, and `residual = TRUE` adds residual error. Here, 100 mg every 12 hours for 5 doses:
+
+```{r regimen}
+pred <- predict(fit, regimen = dose_regimen(100, ii = 12, n = 5), times = seq(0, 72, 1))
+head(pred)
+plot(pred, main = "100 mg every 12 h, new subjects", xlab = "Time (h)", ylab = "Concentration (mg/L)")
+```
+
+`pk_conc()` computes concentrations for given parameters without a fit, for example to check a regimen:
+
+```{r}
+pk_conc(c(1, 4, 12), dose_regimen(100), c(CL = 3, V = 30, KA = 1.2), "1cmt", "oral")
+```
+
+## Next
+
+- [Covariates and informative priors](covariates-priors.html): weight effects, borrowing information from earlier studies, and prior sensitivity.
+- [Two-compartment models and regimen comparison](two-compartment.html): infusion data, comparing dosing regimens, and flip-flop in oral models.

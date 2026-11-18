@@ -13,6 +13,15 @@ solutions.
 \references{
 Stan Development Team. RStan: the R interface to Stan. https://mc-stan.org
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/DaikiKumakura/bayespk}
+  \item \url{https://daikikumakura.github.io/bayespk/}
+  \item Report bugs at \url{https://github.com/DaikiKumakura/bayespk/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Daiki Kumakura \email{55353329+DaikiKumakura@users.noreply.github.com}
 

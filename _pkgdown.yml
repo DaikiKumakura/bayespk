@@ -5,8 +5,14 @@ reference:
   - title: Model
     contents: [pk_model, pk_priors, priors]
   - title: Fit and results
-    contents: [bpk_fit, summary.bpk_fit, predict.bpk_fit, bpk_draws, bpk_diagnostics, prior_sensitivity]
+    contents: [bpk_fit, summary.bpk_fit, predict.bpk_fit, plot.bpk_fit, plot.bpk_prediction, bpk_draws, bpk_diagnostics, prior_sensitivity]
   - title: Concentrations and regimens
     contents: [pk_conc, dose_regimen]
+  - title: Data
+    contents: [bpk_example]
   - title: Package
     contents: [bayespk-package]
+articles:
+  - title: Guides
+    navbar: ~
+    contents: [bayespk, covariates-priors, two-compartment]

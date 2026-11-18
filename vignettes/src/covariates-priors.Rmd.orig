@@ -1,0 +1,87 @@
+---
+title: "Covariates and informative priors"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Covariates and informative priors}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.path = "figures/cov-",
+                      fig.width = 7, fig.height = 4.5, dpi = 96, out.width = "100%")
+```
+
+<!-- Precomputed: this file is generated from vignettes/src/covariates-priors.Rmd.orig. -->
+
+```{r}
+library(bayespk)
+```
+
+## Covariates
+
+Covariate effects are formulas on the parameters:
+
+- `(WT / 70)^0.75` fixes the exponent.
+- `(WT / 70)^b_wt` estimates the exponent as a parameter named `b_wt`.
+- `exp(b_age * (AGE - 40))` and `(SEX == 1)^b_sex` are also available.
+
+Terms can be multiplied, as in `CL ~ (WT / 70)^0.75 * (CRCL / 100)^b_crcl`. Covariates must be constant within a subject.
+
+```{r fit-cov}
+mod_wt <- pk_model("1cmt", route = "oral", iiv = c("CL", "V", "KA"),
+                   covariates = list(CL ~ (WT / 70)^0.75, V ~ (WT / 70)^b_wt))
+fit_wt <- bpk_fit(mod_wt, bpk_example, chains = 4, cores = 4, seed = 1)
+summary(fit_wt)
+```
+
+`bpk_example` was simulated with a weight exponent of 1 on V and 0.75 on CL, which is fixed here.
+
+To predict for a particular subject, pass covariate values. Here, a 50 kg and a 100 kg subject on the same regimen:
+
+```{r cov-pred}
+reg <- dose_regimen(100, ii = 12, n = 5)
+light <- predict(fit_wt, regimen = reg, covariates = list(WT = 50), times = seq(0, 72, 1))
+heavy <- predict(fit_wt, regimen = reg, covariates = list(WT = 100), times = seq(0, 72, 1))
+plot(light, compare = heavy, labels = c("50 kg", "100 kg"), main = "100 mg every 12 h",
+     xlab = "Time (h)", ylab = "Concentration (mg/L)")
+```
+
+## Informative priors
+
+A common reason for a Bayesian analysis is to use what is already known, for example adult values when only a small paediatric study is available. Priors are given with `pk_priors()`:
+
+- `lognormal(meanlog, sdlog)` for typical values (`CL`, `V`, `V1`, `Q`, `V2`, `KA`).
+- `normal(mean, sd)` for covariate effects (`b_wt`, ...).
+- `half_normal(scale)` for between-subject SDs (`omega`, or `omega_CL` for one parameter) and residual SDs (`sigma_prop`, `sigma_add`, `sigma_log`).
+
+Suppose an earlier study gave a CL of about 3 L/h with 20% uncertainty, and a weight exponent on V near 1. Now only 8 subjects are available:
+
+```{r small}
+small <- bpk_example[bpk_example$ID %in% c(3, 6, 9, 12, 18, 21, 24, 27), ]
+pri <- pk_priors(CL = lognormal(log(3), 0.2), b_wt = normal(1, 0.25))
+fit_small_weak <- bpk_fit(mod_wt, small, chains = 4, cores = 4, seed = 1)
+fit_small_inf <- bpk_fit(mod_wt, small, priors = pri, chains = 4, cores = 4, seed = 1)
+fit_small_inf$priors
+```
+
+The table marks which priors came from the user and which are defaults. Posterior 90% intervals with the default and the informative priors:
+
+```{r compare}
+s1 <- summary(fit_small_weak)
+s2 <- summary(fit_small_inf)
+keep <- c("CL", "V", "b_wt")
+data.frame(variable = keep,
+           default_q5 = s1$q5[match(keep, s1$variable)],
+           default_q95 = s1$q95[match(keep, s1$variable)],
+           informative_q5 = s2$q5[match(keep, s2$variable)],
+           informative_q95 = s2$q95[match(keep, s2$variable)])
+```
+
+## Is the result driven by the prior?
+
+`prior_sensitivity()` scales the prior and the likelihood up and down (power-scaling, with the priorsense package) and reports which parameters respond. The flags "prior-data conflict" and "strong prior / weak likelihood" mean that the conclusion depends on the prior. In that case, report the prior and justify it.
+
+```{r sens}
+prior_sensitivity(fit_small_inf)
+```
