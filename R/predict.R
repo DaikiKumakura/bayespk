@@ -78,7 +78,7 @@ predict.bpk_fit <- function(object, regimen = NULL, times = NULL,
       for (n in which(grid$sid == i)) {
         conc <- 0
         for (j in seq_len(nrow(d))) {
-          conc <- conc + dose_conc_r(grid$time[n] - d$time[j], d$amt[j], d$rate[j], par,
+          conc <- conc + dose_contrib_r(grid$time[n] - d$time[j], d$amt[j], d$rate[j], d$ss_ii[j], par,
                                      m$structure, m$route)
         }
         out[, n] <- add_res(conc, ex$sigma)
@@ -89,6 +89,7 @@ predict.bpk_fit <- function(object, regimen = NULL, times = NULL,
   }
 
   if (is.null(regimen$rate)) regimen$rate <- 0
+  if (is.null(regimen$ss_ii)) regimen$ss_ii <- 0
   if (is.null(times)) {
     span <- max(regimen$time) + max(c(diff(regimen$time), 24))
     times <- seq(0, span, length.out = 100)
@@ -129,7 +130,7 @@ predict.bpk_fit <- function(object, regimen = NULL, times = NULL,
   for (n in seq_along(times)) {
     conc <- 0
     for (j in seq_len(nrow(regimen))) {
-      conc <- conc + dose_conc_r(times[n] - regimen$time[j], regimen$amt[j], regimen$rate[j],
+      conc <- conc + dose_contrib_r(times[n] - regimen$time[j], regimen$amt[j], regimen$rate[j], regimen$ss_ii[j],
                                  par, m$structure, m$route)
     }
     out[, n] <- add_res(conc, ex$sigma)

@@ -3,12 +3,14 @@
 # fit with the same prior, and record the rank of each true value among
 # thinned posterior draws. If the sampler and model code are correct, ranks
 # are uniform.
-# Run from the package root: Rscript inst/validation/sbc.R <scenario> <n_reps> <workers>
-#   scenario: 1cmt_oral, 2cmt_iv or 1cmt_oral_cov (estimated weight exponent on V)
+# Run from the package root: Rscript inst/validation/sbc.R <scenario> <n_reps> <workers> [offset]
+#   scenario: 1cmt_oral, 2cmt_iv, 1cmt_oral_cov (estimated weight exponent on V)
+#   or 1cmt_oral_log_blq (log-scale error, values below 0.5 censored by M3)
 args <- commandArgs(TRUE)
 SCENARIO <- if (length(args) >= 1) args[1] else "1cmt_oral"
 N_REPS <- if (length(args) >= 2) as.integer(args[2]) else 200
 WORKERS <- if (length(args) >= 3) as.integer(args[3]) else 8
+OFFSET <- if (length(args) >= 4) as.integer(args[4]) else 0   # replicate numbers start at OFFSET + 1
 SEED <- 20261116
 THIN_TO <- 100           # posterior draws kept for ranks
 CHAINS <- 2
@@ -35,6 +37,13 @@ scenarios <- list(
     prior = list(CL = c(log(2.8), 0.3), V = c(log(32), 0.3), KA = c(log(1.5), 0.3)),
     iiv = c("CL", "V", "KA"), omega_scale = 0.4, sigma_scale = 0.2,
     cov = list(param = "V", name = "b_wt", mean = 1, sd = 0.5)
+  ),
+  "1cmt_oral_log_blq" = list(
+    structure = "1cmt", route = "oral", n_subj = 16, amt = 320, rate = 0,
+    times = c(0.25, 0.5, 1, 2, 3.5, 5, 7, 9, 12, 24, 36),
+    prior = list(CL = c(log(2.8), 0.3), V = c(log(32), 0.3), KA = c(log(1.5), 0.3)),
+    iiv = c("CL", "V", "KA"), omega_scale = 0.4, sigma_scale = 0.2,
+    error = "log", lloq = 0.5
   )
 )
 sc <- scenarios[[SCENARIO]]
@@ -56,20 +65,25 @@ one_rep <- function(r, sc, seed, thin_to, chains, iter) {
     if (!is.null(b)) par[[sc$cov$param]] <- par[[sc$cov$param]] * (wt[i] / 70)^b
     for (p in sc$iiv) par[[p]] <- par[[p]] * exp(stats::rnorm(1, 0, omega[[p]]))
     conc <- pk_conc(sc$times, dose, par, sc$structure, sc$route)
-    dv <- conc * (1 + stats::rnorm(length(conc), 0, sigma))
+    err <- if (is.null(sc$error)) "proportional" else sc$error
+    dv <- if (err == "log") conc * exp(stats::rnorm(length(conc), 0, sigma)) else conc * (1 + stats::rnorm(length(conc), 0, sigma))
+    cens <- if (!is.null(sc$lloq)) as.numeric(dv < sc$lloq) else rep(0, length(dv))
+    if (!is.null(sc$lloq)) dv[cens == 1] <- sc$lloq
     rows[[i]] <- rbind(
-      data.frame(ID = i, TIME = 0, AMT = sc$amt, RATE = sc$rate, DV = NA, EVID = 1, WT = wt[i]),
-      data.frame(ID = i, TIME = sc$times, AMT = 0, RATE = 0, DV = dv, EVID = 0, WT = wt[i])
+      data.frame(ID = i, TIME = 0, AMT = sc$amt, RATE = sc$rate, DV = NA, EVID = 1, WT = wt[i], CENS = 0),
+      data.frame(ID = i, TIME = sc$times, AMT = 0, RATE = 0, DV = dv, EVID = 0, WT = wt[i], CENS = cens)
     )
   }
   d <- do.call(rbind, rows)
   pri <- do.call(pk_priors, c(
     lapply(sc$prior, function(p) lognormal(p[1], p[2])),
-    list(omega = half_normal(sc$omega_scale), sigma_prop = half_normal(sc$sigma_scale)),
+    stats::setNames(list(half_normal(sc$omega_scale), half_normal(sc$sigma_scale)),
+                    c("omega", if (identical(sc$error, "log")) "sigma_log" else "sigma_prop")),
     if (!is.null(b)) stats::setNames(list(normal(sc$cov$mean, sc$cov$sd)), sc$cov$name)
   ))
   covs <- if (!is.null(b)) list(stats::as.formula(paste(sc$cov$param, "~ (WT / 70)^", sc$cov$name))) else list()
-  mod <- pk_model(sc$structure, route = sc$route, iiv = sc$iiv, error = "proportional", covariates = covs)
+  mod <- pk_model(sc$structure, route = sc$route, iiv = sc$iiv,
+                  error = if (is.null(sc$error)) "proportional" else sc$error, covariates = covs)
   t0 <- Sys.time()
   fit <- suppressWarnings(suppressMessages(
     bpk_fit(mod, d, priors = pri, chains = chains, iter = iter, cores = 1,
@@ -77,7 +91,8 @@ one_rep <- function(r, sc, seed, thin_to, chains, iter) {
   ))
   dr <- posterior::as_draws_matrix(bpk_draws(fit))
   keep <- round(seq(1, nrow(dr), length.out = thin_to))
-  truth <- c(theta, setNames(omega, paste0("omega_", names(omega))), sigma_prop = sigma)
+  truth <- c(theta, setNames(omega, paste0("omega_", names(omega))),
+             setNames(sigma, if (identical(sc$error, "log")) "sigma_log" else "sigma_prop"))
   if (!is.null(b)) truth[[sc$cov$name]] <- b
   ranks <- vapply(names(truth), function(v) sum(dr[keep, v] < truth[[v]]), numeric(1))
   dg <- bpk_diagnostics(fit)
@@ -89,7 +104,7 @@ one_rep <- function(r, sc, seed, thin_to, chains, iter) {
 cl <- parallel::makeCluster(WORKERS)
 parallel::clusterExport(cl, c("one_rep", "sc", "SEED", "THIN_TO", "CHAINS", "ITER"))
 t_all <- Sys.time()
-res <- parallel::parLapplyLB(cl, seq_len(N_REPS), function(r) {
+res <- parallel::parLapplyLB(cl, OFFSET + seq_len(N_REPS), function(r) {
   tryCatch(one_rep(r, sc, SEED, THIN_TO, CHAINS, ITER),
            error = function(e) data.frame(rep = r, variable = NA, truth = NA, rank = NA,
                                           divergent = NA, rhat_max = NA, ess_bulk_min = NA,
@@ -97,7 +112,7 @@ res <- parallel::parLapplyLB(cl, seq_len(N_REPS), function(r) {
 })
 parallel::stopCluster(cl)
 res <- do.call(rbind, lapply(res, function(x) { if (is.null(x$error)) x$error <- NA_character_; x }))
-write.csv(res, file.path(out_dir, paste0("sbc-", SCENARIO, ".csv")), row.names = FALSE)
+write.csv(res, file.path(out_dir, paste0("sbc-", SCENARIO, if (OFFSET > 0) paste0("-from", OFFSET + 1), ".csv")), row.names = FALSE)
 
 ok <- res[!is.na(res$rank), ]
 cat("scenario", SCENARIO, ": replicates", N_REPS, " failed", length(unique(res$rep[is.na(res$rank)])),
@@ -114,4 +129,4 @@ tab <- do.call(rbind, lapply(split(ok, ok$variable), function(x) {
              min_bin = min(counts), max_bin = max(counts))
 }))
 print(tab, digits = 3)
-write.csv(tab, file.path(out_dir, paste0("sbc-", SCENARIO, "-summary.csv")), row.names = FALSE)
+write.csv(tab, file.path(out_dir, paste0("sbc-", SCENARIO, if (OFFSET > 0) paste0("-from", OFFSET + 1), "-summary.csv")), row.names = FALSE)

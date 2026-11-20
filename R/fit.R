@@ -71,9 +71,9 @@ stan_data <- function(model, prep, pri, prior_only) {
     N = prep$N, ncmt = if (model$structure == "1cmt") 1L else 2L,
     oral = as.integer(model$route == "oral"), K = length(pars),
     n_obs = nrow(prep$obs), obs_id = as.integer(prep$obs$sid),
-    obs_time = prep$obs$time, dv = prep$obs$dv,
+    obs_time = prep$obs$time, dv = prep$obs$dv, cens = array(as.integer(prep$obs$cens), nrow(prep$obs)),
     n_dose = nrow(prep$dose), dose_time = prep$dose$time,
-    dose_amt = prep$dose$amt, dose_rate = prep$dose$rate,
+    dose_amt = prep$dose$amt, dose_rate = prep$dose$rate, dose_ii = prep$dose$ss_ii,
     dose_start = as.integer(prep$dose_start), dose_end = as.integer(prep$dose_end),
     n_eta = length(model$iiv), eta_par = array(match(model$iiv, pars), length(model$iiv)),
     corr = as.integer(model$correlated),
@@ -84,7 +84,11 @@ stan_data <- function(model, prep, pri, prior_only) {
     prior_beta_mu = array(pri$beta_mu, sum(est)), prior_beta_sd = array(pri$beta_sd, sum(est)),
     prior_omega_sd = array(pri$omega_sd, length(model$iiv)), prior_lkj = pri$lkj,
     prior_sigma_sd = pri$sigma_sd, prior_only = as.integer(prior_only),
-    ka_fast = as.integer(isTRUE(model$ka_faster))
+    ka_fast = as.integer(isTRUE(model$ka_faster)),
+    # Mean/deviation split for parameters with IIV except KA, whose individual
+    # values are rarely well identified (benchmark-decouple.csv).
+    decouple = array(as.integer(rep_len(getOption("bayespk.decouple", model$iiv != "KA"),
+                                        length(model$iiv))), length(model$iiv))
   )
 }
 
@@ -227,13 +231,13 @@ bpk_diagnostics <- function(x) {
 # Parameters whose chain medians differ by more than twice the average
 # within-chain standard deviation: chains stuck in different modes. Returns a
 # named character vector of chain medians (empty when chains agree).
-chains_apart <- function(x) {
-  a <- posterior::as_draws_array(bpk_draws(x))
+chains_apart <- function(x) chains_apart_draws(posterior::as_draws_array(bpk_draws(x)))
+
+chains_apart_draws <- function(a) {
   if (posterior::nchains(a) < 2) return(character())
   out <- character()
   for (v in posterior::variables(a)) {
-    m <- a[, , v, drop = TRUE]
-    m <- matrix(as.numeric(m), ncol = posterior::nchains(a))
+    m <- matrix(as.numeric(a[, , v]), ncol = posterior::nchains(a))
     med <- apply(m, 2, stats::median)
     within <- mean(apply(m, 2, stats::sd))
     if (is.finite(within) && within > 0 && diff(range(med)) > 2 * within) {

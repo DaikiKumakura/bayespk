@@ -1,6 +1,19 @@
 // Population PK model with closed-form 1- and 2-compartment solutions.
 // Doses are superposed; no ODE solver is used.
 functions {
+  // Log likelihood of one observation. y is DV (log DV for err == 4). With
+  // cens == 1, y is the quantification limit and the observation lies below
+  // it (Beal's M3 method).
+  real obs_lpdf(real y, real c, vector sigma, int err, int cens) {
+    real mu = err == 4 ? log(c) : c;
+    real sd_y;
+    if (err == 1 || err == 4) sd_y = sigma[1];
+    else if (err == 2) sd_y = sigma[1] * c;
+    else sd_y = sqrt(square(sigma[1]) + square(sigma[2] * c));
+    if (cens == 1) return normal_lcdf(y | mu, sd_y);
+    return normal_lpdf(y | mu, sd_y);
+  }
+
   // Orthonormal Helmert basis applied to u (length N - 1): returns a length-N
   // vector that sums to zero. With u ~ N(0, I), the result is z - mean(z) for
   // z ~ N(0, I). O(N).
@@ -25,6 +38,80 @@ functions {
   }
   // Central concentration at time tau after one dose.
   // par: [CL, V, KA] (ncmt = 1) or [CL, V1, Q, V2, KA] (ncmt = 2); KA used only if oral.
+  // Disposition after a unit bolus: a[1] exp(-l[1] t) + a[2] exp(-l[2] t).
+  // Returns [l1, l2, a1, a2] (1-cmt: a2 = 0).
+  vector disposition(vector par, int ncmt) {
+    vector[4] out;
+    if (ncmt == 1) {
+      out[1] = par[1] / par[2];
+      out[2] = 1;
+      out[3] = 1 / par[2];
+      out[4] = 0;
+    } else {
+      real v1 = par[2];
+      real k10 = par[1] / v1;
+      real k12 = par[3] / v1;
+      real k21 = par[3] / par[4];
+      real s = k10 + k12 + k21;
+      real disc = sqrt(square(s) - 4 * k10 * k21);
+      real alpha = (s + disc) / 2;
+      real beta = (s - disc) / 2;
+      out[1] = alpha;
+      out[2] = beta;
+      out[3] = (alpha - k21) / (alpha - beta) / v1;
+      out[4] = (k21 - beta) / (alpha - beta) / v1;
+    }
+    return out;
+  }
+
+  // exp(-l t) summed over a dose every ii: exp(-l t) / (1 - exp(-l ii)).
+  real geo(real l, real t, real ii) {
+    return exp(-l * t) / (-expm1(-l * ii));
+  }
+
+  // d geo / d l, for KA equal to a disposition rate.
+  real geo_dl(real l, real t, real ii) {
+    real q = -expm1(-l * ii);
+    return (-t * exp(-l * t) * q - exp(-l * t) * ii * exp(-l * ii)) / square(q);
+  }
+
+  // Concentration at time t >= 0 after a steady-state dose (SS = 1) given
+  // every ii: the sum of single-dose concentrations at t, t + ii, t + 2 ii, ...
+  real ss_conc(real t, real amt, real rate, real ii, vector par, int ncmt, int oral) {
+    vector[4] d = disposition(par, ncmt);
+    int nterm = ncmt == 1 ? 1 : 2;
+    real c = 0;
+    for (j in 1:nterm) {
+      real l = d[j];
+      real a = d[j + 2];
+      if (oral == 1) {
+        real ka = par[ncmt == 1 ? 3 : 5];
+        if (abs(ka - l) < 1e-6 * l) c += amt * ka * a * (-geo_dl(l, t, ii));
+        else c += amt * ka * a / (ka - l) * (geo(l, t, ii) - geo(ka, t, ii));
+      } else if (rate > 0) {
+        real dur = amt / rate;
+        if (t < dur)
+          c += rate * a / l * (-expm1(-l * t) + (-expm1(-l * dur)) * geo(l, t + ii - dur, ii));
+        else
+          c += rate * a / l * (-expm1(-l * dur)) * geo(l, t - dur, ii);
+      } else {
+        c += amt * a * geo(l, t, ii);
+      }
+    }
+    return c;
+  }
+
+  // Contribution of one dose record at time tau after it. ii > 0 marks a
+  // steady-state dose; before it (-ii < tau < 0) the same dose train applies.
+  real dose_contrib(real tau, real amt, real rate, real ii, vector par, int ncmt, int oral) {
+    if (ii > 0) {
+      if (tau >= 0) return ss_conc(tau, amt, rate, ii, par, ncmt, oral);
+      if (tau > -ii) return ss_conc(tau + ii, amt, rate, ii, par, ncmt, oral);
+      return 0;
+    }
+    return dose_conc(tau, amt, rate, par, ncmt, oral);
+  }
+
   real dose_conc(real tau, real amt, real rate, vector par, int ncmt, int oral) {
     if (tau < 0) return 0;
     if (ncmt == 1) {
@@ -81,6 +168,7 @@ data {
   vector[n_dose] dose_time;
   vector<lower=0>[n_dose] dose_amt;
   vector<lower=0>[n_dose] dose_rate;    // 0 = bolus or oral
+  vector<lower=0>[n_dose] dose_ii;      // > 0: steady-state dose (SS = 1) given every dose_ii
   array[N] int<lower=1> dose_start;
   array[N] int<lower=0> dose_end;       // dose_end < dose_start: no dose
   int<lower=0> n_eta;
@@ -99,10 +187,13 @@ data {
   real<lower=0> prior_lkj;
   vector<lower=0>[2] prior_sigma_sd;    // half-normal scales: [additive or log, proportional]
   int<lower=0, upper=1> prior_only;
+  array[n_obs] int<lower=0, upper=1> cens;   // 1: DV is the LLOQ and the value is below it
   int<lower=0, upper=1> ka_fast;       // 1: typical KA > typical disposition rate (oral only)
+  array[n_eta] int<lower=0, upper=1> decouple;  // 1: sample typical value + mean random effect
 }
 transformed data {
   int n_sigma = err == 3 ? 2 : 1;
+  vector[n_obs] y = err == 4 ? log(dv) : dv;
 }
 parameters {
   // mu_raw: for parameters with IIV, the log typical value plus the mean
@@ -123,7 +214,7 @@ transformed parameters {
     matrix[n_eta, n_eta] L_omega = corr == 1 ? diag_pre_multiply(omega, L_corr) : diag_matrix(omega);
     vector[n_eta] shift = L_omega * zbar;
     for (e in 1:n_eta)
-      if (!(ka_fast == 1 && eta_par[e] == K)) theta_raw[eta_par[e]] -= shift[e];
+      if (decouple[e] == 1 && !(ka_fast == 1 && eta_par[e] == K)) theta_raw[eta_par[e]] -= shift[e];
   }
   vector[K] log_theta = theta_raw;
   real log_jac = 0;
@@ -172,11 +263,8 @@ model {
       vector[K] par = exp(log_par[i]');
       real c = 0;
       for (d in dose_start[i]:dose_end[i])
-        c += dose_conc(obs_time[n] - dose_time[d], dose_amt[d], dose_rate[d], par, ncmt, oral);
-      if (err == 4) dv[n] ~ normal(log(c), sigma[1]);
-      else if (err == 1) dv[n] ~ normal(c, sigma[1]);
-      else if (err == 2) dv[n] ~ normal(c, sigma[1] * c);
-      else dv[n] ~ normal(c, sqrt(square(sigma[1]) + square(sigma[2] * c)));
+        c += dose_contrib(obs_time[n] - dose_time[d], dose_amt[d], dose_rate[d], dose_ii[d], par, ncmt, oral);
+      target += obs_lpdf(y[n] | c, sigma, err, cens[n]);
     }
   }
 }
@@ -187,10 +275,7 @@ generated quantities {
     vector[K] par = exp(log_par[i]');
     real c = 0;
     for (d in dose_start[i]:dose_end[i])
-      c += dose_conc(obs_time[n] - dose_time[d], dose_amt[d], dose_rate[d], par, ncmt, oral);
-    if (err == 4) log_lik[n] = normal_lpdf(dv[n] | log(c), sigma[1]);
-    else if (err == 1) log_lik[n] = normal_lpdf(dv[n] | c, sigma[1]);
-    else if (err == 2) log_lik[n] = normal_lpdf(dv[n] | c, sigma[1] * c);
-    else log_lik[n] = normal_lpdf(dv[n] | c, sqrt(square(sigma[1]) + square(sigma[2] * c)));
+      c += dose_contrib(obs_time[n] - dose_time[d], dose_amt[d], dose_rate[d], dose_ii[d], par, ncmt, oral);
+    log_lik[n] = obs_lpdf(y[n] | c, sigma, err, cens[n]);
   }
 }

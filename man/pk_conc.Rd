@@ -16,7 +16,8 @@ pk_conc(
 \item{times}{Observation times.}
 
 \item{doses}{Data frame with \code{time}, \code{amt} and optionally \code{rate}
-(0 for bolus or oral doses), as returned by \code{\link[=dose_regimen]{dose_regimen()}}.}
+(0 for bolus or oral doses) and \code{ss_ii} (> 0 for a steady-state dose
+given every \code{ss_ii}), as returned by \code{\link[=dose_regimen]{dose_regimen()}}.}
 
 \item{par}{Named numeric vector of parameters (\code{CL}, \code{V} or \code{CL}, \code{V1},
 \code{Q}, \code{V2}, and \code{KA} for oral).}

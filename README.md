@@ -7,7 +7,7 @@
 Bayesian population pharmacokinetics in R **without writing Stan**.
 
 - **One line per model.** `pk_model("2cmt", route = "oral", iiv = c("CL", "V1", "KA"), covariates = list(CL ~ (WT / 70)^0.75))`.
-- **Your NONMEM data set as it is.** `ID`, `TIME`, `DV`, `AMT`, `EVID`, `RATE`, `ADDL`/`II`, and `"."` for missing values.
+- **Your NONMEM data set as it is.** `ID`, `TIME`, `DV`, `AMT`, `EVID`, `RATE`, `ADDL`/`II`, `SS = 1` (steady state), `CENS = 1` (below the quantification limit, Beal's M3), and `"."` for missing values.
 - **Nothing to compile.** The Stan programs are precompiled and use closed-form solutions, so a fit starts at once. Binaries are on R-universe.
 - **Priors you can state and check.** Use earlier studies with `pk_priors()`. Defaults are printed, and `prior_sensitivity()` shows whether conclusions depend on the prior.
 - **Diagnostics by default.** Warnings for divergences, R-hat, effective sample size and chains stuck in different modes.
@@ -67,6 +67,7 @@ Not on CRAN.
 - [Getting started](https://daikikumakura.github.io/bayespk/articles/bayespk.html): model, fit, results, plots and predictions.
 - [Covariates and informative priors](https://daikikumakura.github.io/bayespk/articles/covariates-priors.html): weight effects, borrowing from earlier studies, prior sensitivity.
 - [Two-compartment models and regimen comparison](https://daikikumakura.github.io/bayespk/articles/two-compartment.html): infusion data, comparing regimens, flip-flop.
+- [Steady state and data below the quantification limit](https://daikikumakura.github.io/bayespk/articles/data-features.html): `SS = 1` and `CENS = 1` records.
 - [Function reference](https://daikikumakura.github.io/bayespk/reference/).
 
 ## What it covers
@@ -77,16 +78,16 @@ Not on CRAN.
 - **Residual error:** additive, proportional, combined, or additive on the log scale.
 - **Flip-flop:** in oral models, `ka_faster = TRUE` keeps the typical KA above the disposition rate when absorption is known to be faster than distribution (off by default).
 
-Not in this version: user-written ODE models, Michaelis–Menten or target-mediated elimination, steady-state records, data below the quantification limit, inter-occasion variability, time-varying covariates and pharmacodynamics.
+Not in this version: user-written ODE models, Michaelis–Menten or target-mediated elimination, inter-occasion variability, time-varying covariates and pharmacodynamics.
 
 ## Validation and limitations
 
 Details are in [`inst/validation/README.md`](inst/validation/README.md).
 
 - Closed-form concentrations agree with rxode2 ODE solutions (relative error < 1e-8).
-- Simulation-based calibration in three scenarios (100 to 200 replicates each) shows no miscalibration after correction for the number of parameters.
+- Simulation-based calibration in four scenarios (100 to 400 replicates each): no test is below the correction for the number of parameters. Of 29 tests, two have p < 0.05 (1.5 expected by chance). One is sigma_log with log-scale error and censoring (p = 0.014, true values ranked slightly low); the cause is unknown.
 - On the public theophylline and warfarin data (nlmixr2data), posterior medians of typical values are within 1–10% of nlmixr2 FOCEI estimates.
-- **Limitations.** Fits are slower than FOCEI: 24 s against 10 s on theophylline, and about 17 minutes on one core for a 40-subject 2-compartment oral study. In sparse 2-compartment oral designs the variance parameters mix slowly. In 20 simulated studies, 8 fits had zero divergences and maximum R-hat ≤ 1.01, and the others had R-hat up to 1.021. Check `bpk_diagnostics(fit)` and `plot(fit, type = "trace")` before interpreting results.
+- **Limitations.** Fits are slower than FOCEI: 38 s against 15 s on theophylline, and about 16 minutes on one core for a 40-subject 2-compartment oral study. In sparse 2-compartment oral designs the variance parameters mix slowly. In 20 simulated studies, 11 fits had zero divergences and maximum R-hat ≤ 1.01, and the others had R-hat up to 1.023. Check `bpk_diagnostics(fit)` and `plot(fit, type = "trace")` before interpreting results.
 
 ## Getting help
 

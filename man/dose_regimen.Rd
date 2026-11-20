@@ -4,7 +4,7 @@
 \alias{dose_regimen}
 \title{Dosing regimen}
 \usage{
-dose_regimen(amt, ii = 0, n = 1, rate = 0, start = 0)
+dose_regimen(amt, ii = 0, n = 1, rate = 0, start = 0, ss = FALSE)
 }
 \arguments{
 \item{amt}{Dose amount.}
@@ -16,13 +16,17 @@ dose_regimen(amt, ii = 0, n = 1, rate = 0, start = 0)
 \item{rate}{Infusion rate (0 for bolus or oral).}
 
 \item{start}{Time of the first dose.}
+
+\item{ss}{Logical; the first dose is at steady state (the regimen has been
+given every \code{ii} long before \code{start}), as NONMEM \code{SS = 1}.}
 }
 \value{
-Data frame with \code{time}, \code{amt} and \code{rate}.
+Data frame with \code{time}, \code{amt}, \code{rate} and \code{ss_ii}.
 }
 \description{
 Dosing regimen
 }
 \examples{
 dose_regimen(100, ii = 12, n = 3)
+dose_regimen(100, ii = 12, n = 2, ss = TRUE)   # at steady state
 }

@@ -15,4 +15,4 @@ reference:
 articles:
   - title: Guides
     navbar: ~
-    contents: [bayespk, covariates-priors, two-compartment]
+    contents: [bayespk, covariates-priors, two-compartment, data-features]

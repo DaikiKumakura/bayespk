@@ -1,6 +1,6 @@
 Package: bayespk
 Title: Bayesian Population Pharmacokinetics Without Writing 'Stan'
-Version: 0.1.1
+Version: 0.2.0
 Authors@R: person("Daiki", "Kumakura", role = c("aut", "cre"), email = "55353329+DaikiKumakura@users.noreply.github.com")
 Description: Fits 1- and 2-compartment linear population pharmacokinetic
     models by Bayesian inference. Models are described in a few lines of R and

@@ -52,8 +52,10 @@ test_that("unsupported data are refused", {
                "changes within subject")
   ss <- nm
   ss$SS <- 0
+  ss$SS[2] <- 2
+  expect_error(bayespk:::prepare_data(m, ss), "Only SS = 1")
   ss$SS[2] <- 1
-  expect_error(bayespk:::prepare_data(m, ss), "Steady-state")
+  expect_error(bayespk:::prepare_data(m, ss), "positive II")
   inf <- nm
   inf$RATE <- 0
   inf$RATE[2] <- 50
