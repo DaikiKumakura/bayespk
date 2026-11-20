@@ -67,8 +67,8 @@ fit <- bpk_fit(pk_model("1cmt", "oral", iiv = c("CL", "V")), bpk_example,
 #> 
 #> SAMPLING FOR MODEL 'popk' NOW (CHAIN 1).
 #> Chain 1: 
-#> Chain 1: Gradient evaluation took 0.000174 seconds
-#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.74 seconds.
+#> Chain 1: Gradient evaluation took 0.000154 seconds
+#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.54 seconds.
 #> Chain 1: Adjust your expectations accordingly!
 #> Chain 1: 
 #> Chain 1: 
@@ -85,15 +85,15 @@ fit <- bpk_fit(pk_model("1cmt", "oral", iiv = c("CL", "V")), bpk_example,
 #> Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)
 #> Chain 1: 
-#> Chain 1:  Elapsed Time: 5.678 seconds (Warm-up)
-#> Chain 1:                2.573 seconds (Sampling)
-#> Chain 1:                8.251 seconds (Total)
+#> Chain 1:  Elapsed Time: 4.831 seconds (Warm-up)
+#> Chain 1:                2.116 seconds (Sampling)
+#> Chain 1:                6.947 seconds (Total)
 #> Chain 1: 
 #> 
 #> SAMPLING FOR MODEL 'popk' NOW (CHAIN 2).
 #> Chain 2: 
-#> Chain 2: Gradient evaluation took 0.000195 seconds
-#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 1.95 seconds.
+#> Chain 2: Gradient evaluation took 0.000139 seconds
+#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 1.39 seconds.
 #> Chain 2: Adjust your expectations accordingly!
 #> Chain 2: 
 #> Chain 2: 
@@ -110,14 +110,14 @@ fit <- bpk_fit(pk_model("1cmt", "oral", iiv = c("CL", "V")), bpk_example,
 #> Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)
 #> Chain 2: 
-#> Chain 2:  Elapsed Time: 5.782 seconds (Warm-up)
-#> Chain 2:                2.67 seconds (Sampling)
-#> Chain 2:                8.452 seconds (Total)
+#> Chain 2:  Elapsed Time: 5.184 seconds (Warm-up)
+#> Chain 2:                2.187 seconds (Sampling)
+#> Chain 2:                7.371 seconds (Total)
 #> Chain 2: 
 #> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
 #> Running the chains for more iterations may help. See
 #> https://mc-stan.org/misc/warnings.html#bulk-ess
-#> Warning: Smallest effective sample size 236 (bulk) / 360 (tail) < 400.
+#> Warning: Smallest effective sample size 232 (bulk) / 351 (tail) < 400.
 a <- predict(fit, regimen = dose_regimen(100, ii = 12, n = 4), times = 0:60)
 b <- predict(fit, regimen = dose_regimen(200, ii = 24, n = 2), times = 0:60)
 plot(a, compare = b, labels = c("100 mg q12h", "200 mg q24h"))

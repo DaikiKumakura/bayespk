@@ -25,7 +25,8 @@ pk_conc(
 - doses:
 
   Data frame with `time`, `amt` and optionally `rate` (0 for bolus or
-  oral doses), as returned by
+  oral doses) and `ss_ii` (\> 0 for a steady-state dose given every
+  `ss_ii`), as returned by
   [`dose_regimen()`](https://daikikumakura.github.io/bayespk/reference/dose_regimen.md).
 
 - par:

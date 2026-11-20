@@ -8,3 +8,5 @@
   priors](https://daikikumakura.github.io/bayespk/articles/covariates-priors.md):
 - [Two-compartment models and regimen
   comparison](https://daikikumakura.github.io/bayespk/articles/two-compartment.md):
+- [Steady state and data below the quantification
+  limit](https://daikikumakura.github.io/bayespk/articles/data-features.md):

@@ -1,5 +1,22 @@
 # Changelog
 
+## bayespk 0.2.0
+
+- **Bug fix:** with `error = "log"`, the likelihood compared the
+  untransformed DV with log(concentration), so log-scale fits in 0.1.0
+  and 0.1.1 were wrong. DV is now log-transformed. A recovery test and a
+  simulation-based calibration scenario with log-scale error were added.
+- Data below the quantification limit: rows with `CENS = 1` (DV holds
+  the limit) are handled by Beal’s M3 method.
+- Steady state: dose records with `SS = 1` and `II` use closed-form
+  steady-state solutions for bolus, infusion and first-order oral doses;
+  earlier doses are reset, and observations within one interval before
+  the steady-state dose (troughs) are used. `dose_regimen(ss = TRUE)`
+  predicts at steady state.
+- The mean/deviation split of the random effects is no longer applied to
+  KA, which was slower without benefit in benchmarks
+  (`inst/validation/benchmark_decouple.R`).
+
 ## bayespk 0.1.1
 
 - [`plot()`](https://rdrr.io/r/graphics/plot.default.html) methods:

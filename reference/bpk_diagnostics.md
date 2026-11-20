@@ -29,8 +29,8 @@ fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 #> 
 #> SAMPLING FOR MODEL 'popk' NOW (CHAIN 1).
 #> Chain 1: 
-#> Chain 1: Gradient evaluation took 0.000314 seconds
-#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 3.14 seconds.
+#> Chain 1: Gradient evaluation took 0.000271 seconds
+#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 2.71 seconds.
 #> Chain 1: Adjust your expectations accordingly!
 #> Chain 1: 
 #> Chain 1: 
@@ -47,15 +47,15 @@ fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 #> Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)
 #> Chain 1: 
-#> Chain 1:  Elapsed Time: 8.601 seconds (Warm-up)
-#> Chain 1:                2.801 seconds (Sampling)
-#> Chain 1:                11.402 seconds (Total)
+#> Chain 1:  Elapsed Time: 7.451 seconds (Warm-up)
+#> Chain 1:                2.512 seconds (Sampling)
+#> Chain 1:                9.963 seconds (Total)
 #> Chain 1: 
 #> 
 #> SAMPLING FOR MODEL 'popk' NOW (CHAIN 2).
 #> Chain 2: 
-#> Chain 2: Gradient evaluation took 0.000171 seconds
-#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 1.71 seconds.
+#> Chain 2: Gradient evaluation took 0.000146 seconds
+#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 1.46 seconds.
 #> Chain 2: Adjust your expectations accordingly!
 #> Chain 2: 
 #> Chain 2: 
@@ -72,11 +72,14 @@ fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 #> Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)
 #> Chain 2: 
-#> Chain 2:  Elapsed Time: 9.53 seconds (Warm-up)
-#> Chain 2:                3.056 seconds (Sampling)
-#> Chain 2:                12.586 seconds (Total)
+#> Chain 2:  Elapsed Time: 7.538 seconds (Warm-up)
+#> Chain 2:                2.397 seconds (Sampling)
+#> Chain 2:                9.935 seconds (Total)
 #> Chain 2: 
-#> Warning: Smallest effective sample size 271 (bulk) / 333 (tail) < 400.
+#> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
+#> Running the chains for more iterations may help. See
+#> https://mc-stan.org/misc/warnings.html#bulk-ess
+#> Warning: Smallest effective sample size 197 (bulk) / 374 (tail) < 400.
 bpk_diagnostics(fit)
 #> $divergent
 #> [1] 0
@@ -85,10 +88,10 @@ bpk_diagnostics(fit)
 #> [1] 0
 #> 
 #> $ebfmi
-#> [1] 0.5274514 0.7076860
+#> [1] 0.5178749 0.5532899
 #> 
 #> $rhat_max
-#> [1] 1.006853
+#> [1] 1.00662
 #> 
 #> $rhat_high
 #> character(0)
@@ -97,10 +100,10 @@ bpk_diagnostics(fit)
 #> character(0)
 #> 
 #> $ess_bulk_min
-#> [1] 271.4988
+#> [1] 196.6288
 #> 
 #> $ess_tail_min
-#> [1] 332.6188
+#> [1] 374.4252
 #> 
 # }
 ```

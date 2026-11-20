@@ -30,8 +30,8 @@ fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 #> 
 #> SAMPLING FOR MODEL 'popk' NOW (CHAIN 1).
 #> Chain 1: 
-#> Chain 1: Gradient evaluation took 0.000183 seconds
-#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.83 seconds.
+#> Chain 1: Gradient evaluation took 0.000158 seconds
+#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.58 seconds.
 #> Chain 1: Adjust your expectations accordingly!
 #> Chain 1: 
 #> Chain 1: 
@@ -48,15 +48,15 @@ fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 #> Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)
 #> Chain 1: 
-#> Chain 1:  Elapsed Time: 8.588 seconds (Warm-up)
-#> Chain 1:                2.795 seconds (Sampling)
-#> Chain 1:                11.383 seconds (Total)
+#> Chain 1:  Elapsed Time: 7.463 seconds (Warm-up)
+#> Chain 1:                2.495 seconds (Sampling)
+#> Chain 1:                9.958 seconds (Total)
 #> Chain 1: 
 #> 
 #> SAMPLING FOR MODEL 'popk' NOW (CHAIN 2).
 #> Chain 2: 
-#> Chain 2: Gradient evaluation took 0.000173 seconds
-#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 1.73 seconds.
+#> Chain 2: Gradient evaluation took 0.000143 seconds
+#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 1.43 seconds.
 #> Chain 2: Adjust your expectations accordingly!
 #> Chain 2: 
 #> Chain 2: 
@@ -73,20 +73,23 @@ fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 #> Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)
 #> Chain 2: 
-#> Chain 2:  Elapsed Time: 9.558 seconds (Warm-up)
-#> Chain 2:                3.087 seconds (Sampling)
-#> Chain 2:                12.645 seconds (Total)
+#> Chain 2:  Elapsed Time: 7.512 seconds (Warm-up)
+#> Chain 2:                2.395 seconds (Sampling)
+#> Chain 2:                9.907 seconds (Total)
 #> Chain 2: 
-#> Warning: Smallest effective sample size 271 (bulk) / 333 (tail) < 400.
+#> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
+#> Running the chains for more iterations may help. See
+#> https://mc-stan.org/misc/warnings.html#bulk-ess
+#> Warning: Smallest effective sample size 197 (bulk) / 374 (tail) < 400.
 head(posterior::as_draws_df(bpk_draws(fit)))
 #> # A draws_df: 6 iterations, 1 chains, and 7 variables
 #>    CL  V   KA omega_CL omega_V omega_KA sigma_prop
-#> 1 3.1 28 1.21     0.20    0.29     0.37       0.15
-#> 2 2.8 27 0.80     0.21    0.30     0.35       0.14
-#> 3 3.0 29 1.12     0.23    0.32     0.32       0.14
-#> 4 2.7 28 0.98     0.20    0.29     0.42       0.16
-#> 5 3.2 28 0.99     0.22    0.33     0.37       0.14
-#> 6 3.3 27 0.95     0.24    0.33     0.35       0.14
+#> 1 2.8 28 0.91     0.24    0.26     0.30       0.15
+#> 2 2.8 27 0.94     0.25    0.30     0.37       0.15
+#> 3 2.9 29 0.88     0.26    0.27     0.37       0.16
+#> 4 2.8 28 0.87     0.21    0.26     0.32       0.14
+#> 5 2.7 29 0.89     0.28    0.26     0.28       0.15
+#> 6 3.0 27 1.16     0.29    0.27     0.45       0.14
 #> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
 # }
 ```

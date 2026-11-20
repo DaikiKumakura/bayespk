@@ -9,7 +9,7 @@ summed over doses. These are the same solutions used in the Stan model."></head>
 
     <a class="navbar-brand me-2" href="../index.html">bayespk</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,6 +23,7 @@ summed over doses. These are the same solutions used in the Stan model."></head>
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/covariates-priors.html">Covariates and informative priors</a></li>
     <li><a class="dropdown-item" href="../articles/two-compartment.html">Two-compartment models and regimen comparison</a></li>
+    <li><a class="dropdown-item" href="../articles/data-features.html">Steady state and data below the quantification limit</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -37,7 +38,7 @@ summed over doses. These are the same solutions used in the Stan model."></head>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Concentrations from closed-form solutions</h1>
-      <small class="dont-index">Source: <a href="https://github.com/DaikiKumakura/bayespk/blob/v0.1.1/R/closed_form.R" class="external-link"><code>R/closed_form.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/DaikiKumakura/bayespk/blob/main/R/closed_form.R" class="external-link"><code>R/closed_form.R</code></a></small>
       <div class="d-none name"><code>pk_conc.Rd</code></div>
     </div>
 
@@ -67,7 +68,8 @@ summed over doses. These are the same solutions used in the Stan model.</p>
 
 <dt id="arg-doses">doses<a class="anchor" aria-label="anchor" href="#arg-doses"></a></dt>
 <dd><p>Data frame with <code>time</code>, <code>amt</code> and optionally <code>rate</code>
-(0 for bolus or oral doses), as returned by <code><a href="dose_regimen.html">dose_regimen()</a></code>.</p></dd>
+(0 for bolus or oral doses) and <code>ss_ii</code> (&gt; 0 for a steady-state dose
+given every <code>ss_ii</code>), as returned by <code><a href="dose_regimen.html">dose_regimen()</a></code>.</p></dd>
 
 
 <dt id="arg-par">par<a class="anchor" aria-label="anchor" href="#arg-par"></a></dt>
