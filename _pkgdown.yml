@@ -1,6 +1,39 @@
 url: https://daikikumakura.github.io/bayespk/
 template:
   bootstrap: 5
+  bslib:
+    bg: "#ffffff"
+    fg: "#252525"
+    primary: "#25577b"
+    border-color: "#dddddd"
+    line-height-base: 1.65
+    headings-font-weight: 500
+navbar:
+  bg: light
+  type: light
+  structure:
+    left: [start, reference, articles, news, downloads]
+    right: [search, github]
+  components:
+    start:
+      text: Get started
+      menu:
+        - text: Install
+          href: "index.html#installation"
+        - text: First example
+          href: "articles/bayespk.html"
+    downloads:
+      text: Downloads
+      menu:
+        - text: Release
+          href: "https://github.com/DaikiKumakura/bayespk/releases/tag/v0.2.0"
+        - text: R-universe
+          href: "https://daikikumakura.r-universe.dev/bayespk"
+        - text: Zenodo
+          href: "https://doi.org/10.5281/zenodo.24395746"
+        - text: Portfolio
+          href: "https://daikikumakura.github.io/software/bayespk.html"
+
 reference:
   - title: Model
     contents: [pk_model, pk_priors, priors]
