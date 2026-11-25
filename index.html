@@ -119,6 +119,23 @@
 </div>
 </div>
 <div class="section level2">
+<h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
+</h2>
+<p><a href="https://daikikumakura.github.io/bayespk/">Package website</a> · <a href="https://daikikumakura.github.io/bayespk/reference/">Function reference</a> · <a href="https://daikikumakura.github.io/bayespk/news/">Changelog</a> · <a href="https://github.com/DaikiKumakura/bayespk/releases" class="external-link">Releases</a> · <a href="https://daikikumakura.r-universe.dev/bayespk" class="external-link">R-universe</a></p>
+<ul>
+<li>
+<a href="https://daikikumakura.github.io/bayespk/articles/bayespk.html">Getting started</a>: model, fit, results, plots and predictions.</li>
+<li>
+<a href="https://daikikumakura.github.io/bayespk/articles/covariates-priors.html">Covariates and informative priors</a>: weight effects, borrowing from earlier studies, prior sensitivity.</li>
+<li>
+<a href="https://daikikumakura.github.io/bayespk/articles/two-compartment.html">Two-compartment models and regimen comparison</a>: infusion data, comparing regimens, flip-flop.</li>
+<li>
+<a href="https://daikikumakura.github.io/bayespk/articles/data-features.html">Steady state and data below the quantification limit</a>: <code>SS = 1</code> and <code>CENS = 1</code> records.</li>
+<li>
+<a href="https://daikikumakura.github.io/bayespk/reference/">Function reference</a>.</li>
+</ul>
+</div>
+<div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
 <details><summary>
@@ -137,22 +154,6 @@ Show details
 <li>
 <strong>Predictions for new regimens.</strong> Simulate new subjects from the posterior, with uncertainty and between-subject variability.</li>
 </ul></details>
-</div>
-<div class="section level2">
-<h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
-</h2>
-<ul>
-<li>
-<a href="https://daikikumakura.github.io/bayespk/articles/bayespk.html">Getting started</a>: model, fit, results, plots and predictions.</li>
-<li>
-<a href="https://daikikumakura.github.io/bayespk/articles/covariates-priors.html">Covariates and informative priors</a>: weight effects, borrowing from earlier studies, prior sensitivity.</li>
-<li>
-<a href="https://daikikumakura.github.io/bayespk/articles/two-compartment.html">Two-compartment models and regimen comparison</a>: infusion data, comparing regimens, flip-flop.</li>
-<li>
-<a href="https://daikikumakura.github.io/bayespk/articles/data-features.html">Steady state and data below the quantification limit</a>: <code>SS = 1</code> and <code>CENS = 1</code> records.</li>
-<li>
-<a href="https://daikikumakura.github.io/bayespk/reference/">Function reference</a>.</li>
-</ul>
 </div>
 <div class="section level2">
 <h2 id="what-it-covers">What it covers<a class="anchor" aria-label="anchor" href="#what-it-covers"></a>
@@ -175,6 +176,14 @@ Show details
 </details>
 </div>
 <div class="section level2">
+<h2 id="getting-help">Getting help<a class="anchor" aria-label="anchor" href="#getting-help"></a>
+</h2>
+<details><summary>
+Show details
+</summary><p>Questions, bugs and requests for models: <a href="https://github.com/DaikiKumakura/bayespk/issues" class="external-link">GitHub issues</a>.</p>
+</details>
+</div>
+<div class="section level2">
 <h2 id="validation-and-limitations">Validation and limitations<a class="anchor" aria-label="anchor" href="#validation-and-limitations"></a>
 </h2>
 <p>Details are in <a href="inst/validation/README.html"><code>inst/validation/README.md</code></a>.</p>
@@ -185,14 +194,6 @@ Show details
 <li>
 <strong>Limitations.</strong> Fits are slower than FOCEI: 38 s against 15 s on theophylline, and about 16 minutes on one core for a 40-subject 2-compartment oral study. In sparse 2-compartment oral designs the variance parameters mix slowly. In 20 simulated studies, 11 fits had zero divergences and maximum R-hat ≤ 1.01, and the others had R-hat up to 1.023. Check <code>bpk_diagnostics(fit)</code> and <code>plot(fit, type = "trace")</code> before interpreting results.</li>
 </ul>
-</div>
-<div class="section level2">
-<h2 id="getting-help">Getting help<a class="anchor" aria-label="anchor" href="#getting-help"></a>
-</h2>
-<details><summary>
-Show details
-</summary><p>Questions, bugs and requests for models: <a href="https://github.com/DaikiKumakura/bayespk/issues" class="external-link">GitHub issues</a>.</p>
-</details>
 </div>
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>

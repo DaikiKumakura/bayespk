@@ -69,6 +69,29 @@ new subjects](reference/figures/README-regimens.png)
 Predicted concentrations for two regimens, median and 90% interval of
 new subjects
 
+## Documentation
+
+[Package website](https://daikikumakura.github.io/bayespk/) · [Function
+reference](https://daikikumakura.github.io/bayespk/reference/) ·
+[Changelog](https://daikikumakura.github.io/bayespk/news/) ·
+[Releases](https://github.com/DaikiKumakura/bayespk/releases) ·
+[R-universe](https://daikikumakura.r-universe.dev/bayespk)
+
+- [Getting
+  started](https://daikikumakura.github.io/bayespk/articles/bayespk.html):
+  model, fit, results, plots and predictions.
+- [Covariates and informative
+  priors](https://daikikumakura.github.io/bayespk/articles/covariates-priors.html):
+  weight effects, borrowing from earlier studies, prior sensitivity.
+- [Two-compartment models and regimen
+  comparison](https://daikikumakura.github.io/bayespk/articles/two-compartment.html):
+  infusion data, comparing regimens, flip-flop.
+- [Steady state and data below the quantification
+  limit](https://daikikumakura.github.io/bayespk/articles/data-features.html):
+  `SS = 1` and `CENS = 1` records.
+- [Function
+  reference](https://daikikumakura.github.io/bayespk/reference/).
+
 ## Overview
 
 Show details
@@ -90,23 +113,6 @@ Show details
   sample size and chains stuck in different modes.
 - **Predictions for new regimens.** Simulate new subjects from the
   posterior, with uncertainty and between-subject variability.
-
-## Documentation
-
-- [Getting
-  started](https://daikikumakura.github.io/bayespk/articles/bayespk.html):
-  model, fit, results, plots and predictions.
-- [Covariates and informative
-  priors](https://daikikumakura.github.io/bayespk/articles/covariates-priors.html):
-  weight effects, borrowing from earlier studies, prior sensitivity.
-- [Two-compartment models and regimen
-  comparison](https://daikikumakura.github.io/bayespk/articles/two-compartment.html):
-  infusion data, comparing regimens, flip-flop.
-- [Steady state and data below the quantification
-  limit](https://daikikumakura.github.io/bayespk/articles/data-features.html):
-  `SS = 1` and `CENS = 1` records.
-- [Function
-  reference](https://daikikumakura.github.io/bayespk/reference/).
 
 ## What it covers
 
@@ -131,6 +137,13 @@ Not in this version: user-written ODE models, Michaelis–Menten or
 target-mediated elimination, inter-occasion variability, time-varying
 covariates and pharmacodynamics.
 
+## Getting help
+
+Show details
+
+Questions, bugs and requests for models: [GitHub
+issues](https://github.com/DaikiKumakura/bayespk/issues).
+
 ## Validation and limitations
 
 Details are in
@@ -152,13 +165,6 @@ Details are in
   zero divergences and maximum R-hat ≤ 1.01, and the others had R-hat up
   to 1.023. Check `bpk_diagnostics(fit)` and `plot(fit, type = "trace")`
   before interpreting results.
-
-## Getting help
-
-Show details
-
-Questions, bugs and requests for models: [GitHub
-issues](https://github.com/DaikiKumakura/bayespk/issues).
 
 ## Citation
 
