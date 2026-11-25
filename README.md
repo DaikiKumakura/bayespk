@@ -116,11 +116,9 @@ Details are in [`inst/validation/README.md`](inst/validation/README.md).
 
 ## Citation
 
-```r
-citation("bayespk")
-```
+Kumakura, D. (2026). *bayespk: Bayesian Population Pharmacokinetics Without Writing Stan* [Software]. [DOI: 10.5281/zenodo.24325845](https://doi.org/10.5281/zenodo.24325845).
 
-Kumakura D (2026). bayespk: Bayesian Population Pharmacokinetics Without Writing Stan. https://doi.org/10.5281/zenodo.24325845
+Citation metadata: [CITATION.cff](CITATION.cff).
 
 ## License
 
