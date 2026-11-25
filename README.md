@@ -6,14 +6,26 @@
 
 Bayesian population pharmacokinetics in R **without writing Stan**.
 
-- **One line per model.** `pk_model("2cmt", route = "oral", iiv = c("CL", "V1", "KA"), covariates = list(CL ~ (WT / 70)^0.75))`.
-- **Your NONMEM data set as it is.** `ID`, `TIME`, `DV`, `AMT`, `EVID`, `RATE`, `ADDL`/`II`, `SS = 1` (steady state), `CENS = 1` (below the quantification limit, Beal's M3), and `"."` for missing values.
-- **Nothing to compile.** The Stan programs are precompiled and use closed-form solutions, so a fit starts at once. Binaries are on R-universe.
-- **Priors you can state and check.** Use earlier studies with `pk_priors()`. Defaults are printed, and `prior_sensitivity()` shows whether conclusions depend on the prior.
-- **Diagnostics by default.** Warnings for divergences, R-hat, effective sample size and chains stuck in different modes.
-- **Predictions for new regimens.** Simulate new subjects from the posterior, with uncertainty and between-subject variability.
+## Installation
 
-## Example
+From R-universe (binaries for Windows, macOS and Linux):
+
+```r
+install.packages("bayespk", repos = c("https://daikikumakura.r-universe.dev", "https://cloud.r-project.org"))
+```
+
+From GitHub (compiles the Stan program once; needs a C++ toolchain, about 1.5 minutes on Windows):
+
+```r
+# install.packages("remotes")
+remotes::install_github("DaikiKumakura/bayespk")
+```
+
+Not on CRAN.
+
+<a id="example"></a>
+
+## Quick start
 
 ```r
 library(bayespk)
@@ -45,22 +57,19 @@ plot(a, compare = b, log = TRUE, labels = c("500 mg every 12 h", "1000 mg every 
 
 ![Predicted concentrations for two regimens, median and 90% interval of new subjects](man/figures/README-regimens.png)
 
-## Installation
+## Overview
 
-From R-universe (binaries for Windows, macOS and Linux):
+<details>
+<summary>Show details</summary>
 
-```r
-install.packages("bayespk", repos = c("https://daikikumakura.r-universe.dev", "https://cloud.r-project.org"))
-```
+- **One line per model.** `pk_model("2cmt", route = "oral", iiv = c("CL", "V1", "KA"), covariates = list(CL ~ (WT / 70)^0.75))`.
+- **Your NONMEM data set as it is.** `ID`, `TIME`, `DV`, `AMT`, `EVID`, `RATE`, `ADDL`/`II`, `SS = 1` (steady state), `CENS = 1` (below the quantification limit, Beal's M3), and `"."` for missing values.
+- **Nothing to compile.** The Stan programs are precompiled and use closed-form solutions, so a fit starts at once. Binaries are on R-universe.
+- **Priors you can state and check.** Use earlier studies with `pk_priors()`. Defaults are printed, and `prior_sensitivity()` shows whether conclusions depend on the prior.
+- **Diagnostics by default.** Warnings for divergences, R-hat, effective sample size and chains stuck in different modes.
+- **Predictions for new regimens.** Simulate new subjects from the posterior, with uncertainty and between-subject variability.
 
-From GitHub (compiles the Stan program once; needs a C++ toolchain, about 1.5 minutes on Windows):
-
-```r
-# install.packages("remotes")
-remotes::install_github("DaikiKumakura/bayespk")
-```
-
-Not on CRAN.
+</details>
 
 ## Documentation
 
@@ -72,6 +81,9 @@ Not on CRAN.
 
 ## What it covers
 
+<details>
+<summary>Show details</summary>
+
 - **Models:** linear 1- and 2-compartment; IV bolus, zero-order infusion (`RATE`) and first-order oral absorption. Parameters `CL`, `V` (or `CL`, `V1`, `Q`, `V2`) and `KA`; for oral dosing they are apparent values (divided by bioavailability).
 - **Variability:** log-normal between-subject variability on any parameter, optionally correlated.
 - **Covariates:** `CL ~ (WT / 70)^0.75` (fixed exponent), `CL ~ (WT / 70)^b_wt` (estimated), `CL ~ exp(b_age * (AGE - 40))`, `CL ~ (SEX == 1)^b_sex`.
@@ -79,6 +91,8 @@ Not on CRAN.
 - **Flip-flop:** in oral models, `ka_faster = TRUE` keeps the typical KA above the disposition rate when absorption is known to be faster than distribution (off by default).
 
 Not in this version: user-written ODE models, Michaelis–Menten or target-mediated elimination, inter-occasion variability, time-varying covariates and pharmacodynamics.
+
+</details>
 
 ## Validation and limitations
 
@@ -91,7 +105,12 @@ Details are in [`inst/validation/README.md`](inst/validation/README.md).
 
 ## Getting help
 
+<details>
+<summary>Show details</summary>
+
 Questions, bugs and requests for models: [GitHub issues](https://github.com/DaikiKumakura/bayespk/issues).
+
+</details>
 
 ## Citation
 
@@ -100,3 +119,7 @@ citation("bayespk")
 ```
 
 Kumakura D (2026). bayespk: Bayesian Population Pharmacokinetics Without Writing Stan. https://doi.org/10.5281/zenodo.24325845
+
+## License
+
+See [LICENSE.md](LICENSE.md).
