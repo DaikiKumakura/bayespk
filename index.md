@@ -6,25 +6,27 @@
 
 Bayesian population pharmacokinetics in R **without writing Stan**.
 
-- **One line per model.**
-  `pk_model("2cmt", route = "oral", iiv = c("CL", "V1", "KA"), covariates = list(CL ~ (WT / 70)^0.75))`.
-- **Your NONMEM data set as it is.** `ID`, `TIME`, `DV`, `AMT`, `EVID`,
-  `RATE`, `ADDL`/`II`, `SS = 1` (steady state), `CENS = 1` (below the
-  quantification limit, Beal’s M3), and `"."` for missing values.
-- **Nothing to compile.** The Stan programs are precompiled and use
-  closed-form solutions, so a fit starts at once. Binaries are on
-  R-universe.
-- **Priors you can state and check.** Use earlier studies with
-  [`pk_priors()`](https://daikikumakura.github.io/bayespk/reference/pk_priors.md).
-  Defaults are printed, and
-  [`prior_sensitivity()`](https://daikikumakura.github.io/bayespk/reference/prior_sensitivity.md)
-  shows whether conclusions depend on the prior.
-- **Diagnostics by default.** Warnings for divergences, R-hat, effective
-  sample size and chains stuck in different modes.
-- **Predictions for new regimens.** Simulate new subjects from the
-  posterior, with uncertainty and between-subject variability.
+## Installation
 
-## Example
+From R-universe (binaries for Windows, macOS and Linux):
+
+``` r
+
+install.packages("bayespk", repos = c("https://daikikumakura.r-universe.dev", "https://cloud.r-project.org"))
+```
+
+From GitHub (compiles the Stan program once; needs a C++ toolchain,
+about 1.5 minutes on Windows):
+
+``` r
+
+# install.packages("remotes")
+remotes::install_github("DaikiKumakura/bayespk")
+```
+
+Not on CRAN.
+
+## Quick start
 
 ``` r
 
@@ -67,25 +69,27 @@ new subjects](reference/figures/README-regimens.png)
 Predicted concentrations for two regimens, median and 90% interval of
 new subjects
 
-## Installation
+## Overview
 
-From R-universe (binaries for Windows, macOS and Linux):
+Show details
 
-``` r
-
-install.packages("bayespk", repos = c("https://daikikumakura.r-universe.dev", "https://cloud.r-project.org"))
-```
-
-From GitHub (compiles the Stan program once; needs a C++ toolchain,
-about 1.5 minutes on Windows):
-
-``` r
-
-# install.packages("remotes")
-remotes::install_github("DaikiKumakura/bayespk")
-```
-
-Not on CRAN.
+- **One line per model.**
+  `pk_model("2cmt", route = "oral", iiv = c("CL", "V1", "KA"), covariates = list(CL ~ (WT / 70)^0.75))`.
+- **Your NONMEM data set as it is.** `ID`, `TIME`, `DV`, `AMT`, `EVID`,
+  `RATE`, `ADDL`/`II`, `SS = 1` (steady state), `CENS = 1` (below the
+  quantification limit, Beal’s M3), and `"."` for missing values.
+- **Nothing to compile.** The Stan programs are precompiled and use
+  closed-form solutions, so a fit starts at once. Binaries are on
+  R-universe.
+- **Priors you can state and check.** Use earlier studies with
+  [`pk_priors()`](https://daikikumakura.github.io/bayespk/reference/pk_priors.md).
+  Defaults are printed, and
+  [`prior_sensitivity()`](https://daikikumakura.github.io/bayespk/reference/prior_sensitivity.md)
+  shows whether conclusions depend on the prior.
+- **Diagnostics by default.** Warnings for divergences, R-hat, effective
+  sample size and chains stuck in different modes.
+- **Predictions for new regimens.** Simulate new subjects from the
+  posterior, with uncertainty and between-subject variability.
 
 ## Documentation
 
@@ -105,6 +109,8 @@ Not on CRAN.
   reference](https://daikikumakura.github.io/bayespk/reference/).
 
 ## What it covers
+
+Show details
 
 - **Models:** linear 1- and 2-compartment; IV bolus, zero-order infusion
   (`RATE`) and first-order oral absorption. Parameters `CL`, `V` (or
@@ -149,6 +155,8 @@ Details are in
 
 ## Getting help
 
+Show details
+
 Questions, bugs and requests for models: [GitHub
 issues](https://github.com/DaikiKumakura/bayespk/issues).
 
@@ -161,3 +169,7 @@ citation("bayespk")
 
 Kumakura D (2026). bayespk: Bayesian Population Pharmacokinetics Without
 Writing Stan. <https://doi.org/10.5281/zenodo.24325845>
+
+## License
+
+See [LICENSE.md](https://daikikumakura.github.io/bayespk/LICENSE.md).
