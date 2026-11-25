@@ -122,4 +122,4 @@ Kumakura D (2026). bayespk: Bayesian Population Pharmacokinetics Without Writing
 
 ## License
 
-See [LICENSE.md](LICENSE.md).
+This project is licensed under GPL-3.0-or-later. See [LICENSE.md](LICENSE.md) for the license terms.
