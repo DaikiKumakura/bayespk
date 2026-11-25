@@ -172,7 +172,9 @@ Writing Stan. <https://doi.org/10.5281/zenodo.24325845>
 
 ## License
 
-See [LICENSE.md](https://daikikumakura.github.io/bayespk/LICENSE.md).
+This project is licensed under GPL-3.0-or-later. See
+[LICENSE.md](https://daikikumakura.github.io/bayespk/LICENSE.md) for the
+license terms.
 
 # Package index
 
