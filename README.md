@@ -57,6 +57,16 @@ plot(a, compare = b, log = TRUE, labels = c("500 mg every 12 h", "1000 mg every 
 
 ![Predicted concentrations for two regimens, median and 90% interval of new subjects](man/figures/README-regimens.png)
 
+## Documentation
+
+[Package website](https://daikikumakura.github.io/bayespk/) · [Function reference](https://daikikumakura.github.io/bayespk/reference/) · [Changelog](https://daikikumakura.github.io/bayespk/news/) · [Releases](https://github.com/DaikiKumakura/bayespk/releases) · [R-universe](https://daikikumakura.r-universe.dev/bayespk)
+
+- [Getting started](https://daikikumakura.github.io/bayespk/articles/bayespk.html): model, fit, results, plots and predictions.
+- [Covariates and informative priors](https://daikikumakura.github.io/bayespk/articles/covariates-priors.html): weight effects, borrowing from earlier studies, prior sensitivity.
+- [Two-compartment models and regimen comparison](https://daikikumakura.github.io/bayespk/articles/two-compartment.html): infusion data, comparing regimens, flip-flop.
+- [Steady state and data below the quantification limit](https://daikikumakura.github.io/bayespk/articles/data-features.html): `SS = 1` and `CENS = 1` records.
+- [Function reference](https://daikikumakura.github.io/bayespk/reference/).
+
 ## Overview
 
 <details>
@@ -70,14 +80,6 @@ plot(a, compare = b, log = TRUE, labels = c("500 mg every 12 h", "1000 mg every 
 - **Predictions for new regimens.** Simulate new subjects from the posterior, with uncertainty and between-subject variability.
 
 </details>
-
-## Documentation
-
-- [Getting started](https://daikikumakura.github.io/bayespk/articles/bayespk.html): model, fit, results, plots and predictions.
-- [Covariates and informative priors](https://daikikumakura.github.io/bayespk/articles/covariates-priors.html): weight effects, borrowing from earlier studies, prior sensitivity.
-- [Two-compartment models and regimen comparison](https://daikikumakura.github.io/bayespk/articles/two-compartment.html): infusion data, comparing regimens, flip-flop.
-- [Steady state and data below the quantification limit](https://daikikumakura.github.io/bayespk/articles/data-features.html): `SS = 1` and `CENS = 1` records.
-- [Function reference](https://daikikumakura.github.io/bayespk/reference/).
 
 ## What it covers
 
@@ -94,15 +96,6 @@ Not in this version: user-written ODE models, Michaelis–Menten or target-media
 
 </details>
 
-## Validation and limitations
-
-Details are in [`inst/validation/README.md`](inst/validation/README.md).
-
-- Closed-form concentrations agree with rxode2 ODE solutions (relative error < 1e-8).
-- Simulation-based calibration in four scenarios (100 to 400 replicates each): no test is below the correction for the number of parameters. Of 29 tests, two have p < 0.05 (1.5 expected by chance). One is sigma_log with log-scale error and censoring (p = 0.014, true values ranked slightly low); the cause is unknown.
-- On the public theophylline and warfarin data (nlmixr2data), posterior medians of typical values are within 1–10% of nlmixr2 FOCEI estimates.
-- **Limitations.** Fits are slower than FOCEI: 38 s against 15 s on theophylline, and about 16 minutes on one core for a 40-subject 2-compartment oral study. In sparse 2-compartment oral designs the variance parameters mix slowly. In 20 simulated studies, 11 fits had zero divergences and maximum R-hat ≤ 1.01, and the others had R-hat up to 1.023. Check `bpk_diagnostics(fit)` and `plot(fit, type = "trace")` before interpreting results.
-
 ## Getting help
 
 <details>
@@ -111,6 +104,15 @@ Details are in [`inst/validation/README.md`](inst/validation/README.md).
 Questions, bugs and requests for models: [GitHub issues](https://github.com/DaikiKumakura/bayespk/issues).
 
 </details>
+
+## Validation and limitations
+
+Details are in [`inst/validation/README.md`](inst/validation/README.md).
+
+- Closed-form concentrations agree with rxode2 ODE solutions (relative error < 1e-8).
+- Simulation-based calibration in four scenarios (100 to 400 replicates each): no test is below the correction for the number of parameters. Of 29 tests, two have p < 0.05 (1.5 expected by chance). One is sigma_log with log-scale error and censoring (p = 0.014, true values ranked slightly low); the cause is unknown.
+- On the public theophylline and warfarin data (nlmixr2data), posterior medians of typical values are within 1–10% of nlmixr2 FOCEI estimates.
+- **Limitations.** Fits are slower than FOCEI: 38 s against 15 s on theophylline, and about 16 minutes on one core for a 40-subject 2-compartment oral study. In sparse 2-compartment oral designs the variance parameters mix slowly. In 20 simulated studies, 11 fits had zero divergences and maximum R-hat ≤ 1.01, and the others had R-hat up to 1.023. Check `bpk_diagnostics(fit)` and `plot(fit, type = "trace")` before interpreting results.
 
 ## Citation
 
