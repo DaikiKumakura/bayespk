@@ -1,8 +1,10 @@
 # bayespk
 
-[![R-CMD-check](https://github.com/DaikiKumakura/bayespk/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/DaikiKumakura/bayespk/actions/workflows/R-CMD-check.yaml)
+<!-- badges: start -->
 [![R-universe](https://daikikumakura.r-universe.dev/badges/bayespk)](https://daikikumakura.r-universe.dev/bayespk)
+[![R-CMD-check](https://github.com/DaikiKumakura/bayespk/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/DaikiKumakura/bayespk/actions/workflows/R-CMD-check.yaml)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24325845.svg)](https://doi.org/10.5281/zenodo.24325845)
+<!-- badges: end -->
 
 Bayesian population pharmacokinetics in R **without writing Stan**.
 
