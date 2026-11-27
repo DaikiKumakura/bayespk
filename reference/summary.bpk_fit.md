@@ -36,8 +36,8 @@ fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 #> 
 #> SAMPLING FOR MODEL 'popk' NOW (CHAIN 1).
 #> Chain 1: 
-#> Chain 1: Gradient evaluation took 0.000202 seconds
-#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 2.02 seconds.
+#> Chain 1: Gradient evaluation took 0.000126 seconds
+#> Chain 1: 1000 transitions using 10 leapfrog steps per transition would take 1.26 seconds.
 #> Chain 1: Adjust your expectations accordingly!
 #> Chain 1: 
 #> Chain 1: 
@@ -54,15 +54,15 @@ fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 #> Chain 1: Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Chain 1: Iteration: 1000 / 1000 [100%]  (Sampling)
 #> Chain 1: 
-#> Chain 1:  Elapsed Time: 9.593 seconds (Warm-up)
-#> Chain 1:                3.216 seconds (Sampling)
-#> Chain 1:                12.809 seconds (Total)
+#> Chain 1:  Elapsed Time: 4.164 seconds (Warm-up)
+#> Chain 1:                1.334 seconds (Sampling)
+#> Chain 1:                5.498 seconds (Total)
 #> Chain 1: 
 #> 
 #> SAMPLING FOR MODEL 'popk' NOW (CHAIN 2).
 #> Chain 2: 
-#> Chain 2: Gradient evaluation took 0.000206 seconds
-#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 2.06 seconds.
+#> Chain 2: Gradient evaluation took 0.000117 seconds
+#> Chain 2: 1000 transitions using 10 leapfrog steps per transition would take 1.17 seconds.
 #> Chain 2: Adjust your expectations accordingly!
 #> Chain 2: 
 #> Chain 2: 
@@ -79,9 +79,9 @@ fit <- bpk_fit(mod, bpk_example, chains = 2, iter = 1000, seed = 1)
 #> Chain 2: Iteration: 900 / 1000 [ 90%]  (Sampling)
 #> Chain 2: Iteration: 1000 / 1000 [100%]  (Sampling)
 #> Chain 2: 
-#> Chain 2:  Elapsed Time: 9.751 seconds (Warm-up)
-#> Chain 2:                3.096 seconds (Sampling)
-#> Chain 2:                12.847 seconds (Total)
+#> Chain 2:  Elapsed Time: 4.226 seconds (Warm-up)
+#> Chain 2:                1.321 seconds (Sampling)
+#> Chain 2:                5.547 seconds (Total)
 #> Chain 2: 
 #> Warning: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
 #> Running the chains for more iterations may help. See
